@@ -4,6 +4,7 @@
   "homepage": "http://webuild.sg",
   "keywords": "developer, designer, maker, engineer, open source, open events, open community",
   "private": true,
+  "main": "index",
   "scripts": {
     "start": "node app",
     "test": "grunt travis --verbose && mocha test --recursive && mocha test --recursive --require blanket --reporter html-cov > coverage.html",
