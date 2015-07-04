@@ -18,6 +18,11 @@ var app = express();
 var cal = ical();
 
 
+// TODO Remove these
+var archives = require('./archives');
+var countdown = require('./countdown');
+
+
 module.exports = {
   init: function(config){
     console.log('invoked init with');
@@ -25,9 +30,7 @@ module.exports = {
     var podcastApiUrl = config.podcastApiUrl;
 
     var events = require('./events')(config);
-    var archives = require('./archives');
-    var countdown = require('./countdown');
-    var repos = require('./repos');
+    var repos = require('./repos')(config);
     var passport = require('./events/setup-passport');
 
     var sitemap = sm.createSitemap ({
