@@ -14,11 +14,6 @@ var ical = require('ical-generator');
 var clc = require('cli-color');
 var sm = require('sitemap');
 
-var events = require('./events');
-var archives = require('./archives');
-var countdown = require('./countdown');
-var repos = require('./repos');
-var passport = require('./events/setup-passport');
 var app = express();
 var cal = ical();
 
@@ -28,6 +23,13 @@ module.exports = {
     console.log('invoked init with');
 
     var podcastApiUrl = config.podcastApiUrl;
+
+    var events = require('./events')(config);
+    var archives = require('./archives');
+    var countdown = require('./countdown');
+    var repos = require('./repos');
+    var passport = require('./events/setup-passport');
+
     var sitemap = sm.createSitemap ({
       hostname: 'https://' + config.domain,
       cacheTime: 600000,
