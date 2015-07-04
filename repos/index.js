@@ -6,7 +6,6 @@ var mess = require('mess');
 var request = require('request');
 var Promise = require('promise');
 var GitHubApi = require('github');
-var whitelistUsers = require('./whitelistUsers');
 var moment = require('moment-timezone');
 var clc = require('cli-color');
 
@@ -43,7 +42,6 @@ module.exports = function(config){
       });
     }
   });
-
 
   function fetch(method, args, limit) {
     return new Promise(function(resolve, reject) {
@@ -87,20 +85,6 @@ module.exports = function(config){
     return chunks;
   }
 
-
-  function insertWhiteList(searchedUsers, whitelistUsers) {
-    whitelistUsers.forEach(function(whitelistUser) {
-      var found = searchedUsers.filter(function(searchedUser) {
-        return searchedUser.login === whitelistUser.login;
-      });
-      if (found.length === 0) {
-        //console.log("adding.. ", whitelistUser.login);
-        searchedUsers.push(whitelistUser);
-      }
-    });
-    return searchedUsers;
-  }
-
   function updateRepos() {
       var pushedQuery = 'pushed:>' + moment().subtract(3, 'months').format('YYYY-MM-DD');
 
@@ -109,7 +93,6 @@ module.exports = function(config){
         q: 'location:' + config.githubParams.location
       }, config.githubParams.maxUsers)
       .then(function(users) {
-        users = insertWhiteList(users, whitelistUsers);
         console.log(clc.blue('Info: Found ' + users.length + ' github.com users'));
         var searches = chunk(mess(users), 20).map(function(users) {
           return fetch(github.search.repos, {
