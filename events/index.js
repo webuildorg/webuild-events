@@ -14,10 +14,10 @@ var eventsResult = {
 
 module.exports = function(config){
   var API = {
-    getFacebookEvents: require('./facebookEvents').get,
-    getMeetupEvents: require('./meetupEvents').get,
-    getEventbriteEvents: require('./eventbriteEvents').get,
-    getIcsEvents: require('./icsEvents').get
+    getFacebookEvents: require('./facebookEvents')(config).get,
+    getMeetupEvents: require('./meetupEvents')(config).get,
+    getEventbriteEvents: require('./eventbriteEvents')(config).get,
+    getIcsEvents: require('./icsEvents')(config).get
   };
 
   function isDuplicateEvent(event1, event2) {
