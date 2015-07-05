@@ -31,7 +31,7 @@ module.exports = {
 
     var events = require('./events')(config);
     var repos = require('./repos')(config);
-    var passport = require('./events/setup-passport');
+    var passport = require('./events/setup-passport')(config);
 
     var sitemap = sm.createSitemap ({
       hostname: 'https://' + config.domain,
