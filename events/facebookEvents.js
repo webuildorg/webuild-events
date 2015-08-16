@@ -24,7 +24,7 @@ module.exports = function (config){
       }
       if (!row.end_time){
        //TODO : add more sanitization checks for end_time
-       row.end_time = utils.localTime(row.start_time).add(2, 'hours').toISOString();
+       row.end_time = utils.localTime(row.start_time, config.timezone).add(2, 'hours').toISOString();
       }
       eventsWithVenues.push({
         id: row.id,
@@ -34,9 +34,9 @@ module.exports = function (config){
         url: 'https://www.facebook.com/events/' + row.id,
         group_name: fbGroups[ grpIdx ].name,
         group_url: 'http://www.facebook.com/groups/' + fbGroups[ grpIdx ].id,
-        formatted_time: utils.formatLocalTime(row.start_time),
-        start_time: utils.localTime(row.start_time).toISOString(),
-        end_time: utils.localTime(row.end_time).toISOString()
+        formatted_time: utils.formatLocalTime(row.start_time, config.timezone, config.displayTimeformat),
+        start_time: utils.localTime(row.start_time, config.timezone).toISOString(),
+        end_time: utils.localTime(row.end_time, config.timezone).toISOString()
       });
     });
 

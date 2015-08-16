@@ -100,9 +100,9 @@ module.exports = function(config){
             wbEvent.url = getUrlfromDescriptionOrGroupUrl(ev);
             wbEvent.group_name = ev.group_name;
             wbEvent.group_url = ev.group_url;
-            wbEvent.formatted_time = utils.formatLocalTime(ev.start_time);
-            wbEvent.start_time = utils.localTime(ev.start_time).toISOString();
-            wbEvent.end_time = utils.localTime(ev.end_time).toISOString();
+            wbEvent.formatted_time = utils.formatLocalTime(ev.start_time, config.timezone, config.displayTimeformat);
+            wbEvent.start_time = utils.localTime(ev.start_time, config.timezone).toISOString();
+            wbEvent.end_time = utils.localTime(ev.end_time, config.timezone).toISOString();
 
             return wbEvent;
           })

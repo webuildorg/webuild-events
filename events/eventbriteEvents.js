@@ -65,7 +65,7 @@ module.exports = function(config){
       url: event.url,
       group_name: event.organizer.name,
       group_url: event.organizer.resource_uri,
-      formatted_time: utils.formatLocalTime(event.start.utc),
+      formatted_time: utils.formatLocalTime(event.start.utc, config.timezone, config.displayTimeformat),
       start_time: event.start.utc,
       end_time: event.end.utc
     });

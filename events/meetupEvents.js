@@ -67,7 +67,7 @@ module.exports = function (config){
       row.duration = 7200000
     }
 
-    eventTime = utils.localTime(row.time);
+    eventTime = utils.localTime(row.time, config.timezone);
 
     event = {
       id: row.id,
@@ -77,7 +77,7 @@ module.exports = function (config){
       url: row.event_url,
       group_name: row.group.name,
       group_url: 'http://meetup.com/' + row.group.urlname,
-      formatted_time: utils.formatLocalTime(row.time),
+      formatted_time: utils.formatLocalTime(row.time, config.timezone, config.displayTimeformat),
       start_time: eventTime.toISOString(),
       end_time: eventTime.add(row.duration, 'milliseconds').toISOString()
     }

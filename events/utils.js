@@ -3,9 +3,6 @@
 var Promise = require('promise');
 var htmlStrip = require('striptags');
 var moment = require('moment-timezone');
-var config = require('../config');
-var displayTimeformat = config.displayTimeformat;
-var localZone = config.timezone;
 
 function waitAllPromises(arr) {
   return new Promise(function(resolve, reject) {
@@ -40,16 +37,16 @@ function waitAllPromises(arr) {
 
 function htmlStripWrapper(str) {
   if (!str) {
-    return ''
+    return '';
   }
   return htmlStrip(str);
 }
 
-function localTime(time) {
+function localTime(time, localZone) {
   return moment.utc(time).utcOffset(localZone);
 }
 
-function formatLocalTime(time) {
+function formatLocalTime(time, localZone, displayTimeformat) {
   return moment.utc(time).utcOffset(localZone).format(displayTimeformat);
 }
 
@@ -57,6 +54,5 @@ module.exports = {
   waitAllPromises: waitAllPromises,
   htmlStrip: htmlStripWrapper,
   localTime: localTime,
-  formatLocalTime: formatLocalTime,
-  timeformat: displayTimeformat
-}
+  formatLocalTime: formatLocalTime
+};

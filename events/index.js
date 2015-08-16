@@ -1,7 +1,6 @@
 'use strict';
 
 var moment = require('moment-timezone');
-var utils = require('./utils');
 var whitelistEvents = require('./whitelistEvents');
 var blacklistEvents = require('./blacklistEvents');
 var overlap = require('word-overlap');
@@ -48,7 +47,7 @@ module.exports = function(config){
   }
 
   function afterToday(evt) {
-    return moment(evt.formatted_time, utils.timeformat) > moment();
+    return moment(evt.formatted_time, config.displayTimeformat) > moment();
   }
 
   function timeComparer(a, b) {
