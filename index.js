@@ -9,18 +9,13 @@ var favicon = require('serve-favicon');
 var http = require('http');
 var moment = require('moment-timezone');
 var request = require('request');
-var cors = require('cors')
+var cors = require('cors');
 var ical = require('ical-generator');
 var clc = require('cli-color');
 var sm = require('sitemap');
 
 var app = express();
 var cal = ical();
-
-
-// TODO Remove these
-var archives = require('./archives');
-var countdown = require('./countdown');
 
 
 module.exports = {
@@ -45,8 +40,6 @@ module.exports = {
       ]
     });
 
-    app.set('port', process.env.PORT || 3000);
-
     app.use(compress());
     app.use('/public', express.static(__dirname + '/public'));
     app.use('/humans.txt', express.static(__dirname + '/public/humans.txt'));
@@ -70,13 +63,7 @@ module.exports = {
     });
 
     app.get('/', function(req, res) {
-      countdown.calculateCountdown();
       res.render('index.jade', {
-        formattedTime: countdown.formattedTime,
-        days: countdown.days,
-        hours: countdown.hours,
-        minutes: countdown.minutes,
-        seconds: countdown.seconds,
         repos: repos.feed.repos.slice(0, 10),
         events: events.feed.events.slice(0, 10)
       });
@@ -103,7 +90,7 @@ module.exports = {
 
       res.send(clashedEvents);
 
-    })
+    });
 
     app.get('/api/v1/events', cors(), function(req, res) {
       res.send(events.feed);
@@ -184,7 +171,7 @@ module.exports = {
 
     app.get('/check', function(req, res) {
       res.redirect('/#check');
-    })
+    });
 
     app.get('/callback', passport.callback);
 
@@ -195,7 +182,7 @@ module.exports = {
       }
       events.update();
       res.status(200).send('Events feed updating...');
-    })
+    });
 
     app.post('/api/v1/repos/update', function(req, res) {
       if (req.param('secret') !== process.env.WEBUILD_API_SECRET) {
@@ -213,10 +200,9 @@ module.exports = {
         res.status(503).send('Incorrect secret key');
         return;
       }
-      archives.update();
       res.status(200).send('Updating the archives; sit tight!');
 
-    })
+    });
 
     app.use('/api/v1/podcasts', cors(), function(req, res) {
      var url = podcastApiUrl;
@@ -227,7 +213,7 @@ module.exports = {
         return;
       }
       res.end(response);
-     })
+     });
     });
 
     app.use(function(req, res) {
@@ -237,16 +223,19 @@ module.exports = {
 
     events.update();
     repos.update();
-    countdown.update();
 
     return this;
   },
 
-  start: function(){
+  start: function(options){
     console.log('invoked start');
 
-    http.createServer(app).listen(app.get('port'), function() {
-      console.log(clc.black('Express server started at http://localhost:' + app.get('port')));
+    options = options || {};
+    var ip = options.ip || process.env.OPENSHIFT_IOJS_IP || '0.0.0.0';
+    var port = options.port || process.env.PORT || process.env.OPENSHIFT_IOJS_PORT || 3000;
+
+    http.createServer(app).listen(port, ip, function() {
+      console.log(clc.black('Express server started at ', ip, ':', port));
     });
   }
-}
+};
