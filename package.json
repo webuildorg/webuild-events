@@ -2,20 +2,13 @@
   "name": "webuild-main",
   "version": "2.12.0",
   "homepage": "https://github.com/webuildorg",
-  "keywords": "developer, designer, maker, engineer, open source, open events, open community",
-  "private": true,
+  "keywords": "events, repos, repositories, facebook, meetup, eventbrite, github, ics, calender",
   "main": "index",
-  "scripts": {
-    "start": "node app",
-    "test": "grunt travis --verbose && mocha test --recursive && mocha test --recursive --require blanket --reporter html-cov > coverage.html",
-    "routine": "grunt cleanup && npm outdated && bower list && npm-check-updates -u && npm i && grunt && npm test && npm outdated"
-  },
   "dependencies": {
     "get-urls": "5.0.0",
     "github": "0.2.4",
     "ical": "0.4.0",
     "jsonfile": "2.2.1",
-    "markdown": "0.5.0",
     "mess": "0.1.2",
     "passport": "0.2.2",
     "passport-auth0": "0.3.0",
@@ -23,33 +16,6 @@
     "promise": "7.0.4",
     "striptags": "2.0.2",
     "word-overlap": "2.4.0"
-  },
-  "devDependencies": {
-    "bower": "1.4.1",
-    "blanket": "1.1.7",
-    "bower": "1.4.1",
-    "chai": "3.2.0",
-    "coveralls": "2.11.3",
-    "grunt": "0.4.5",
-    "grunt-bump": "0.3.1",
-    "grunt-cli": "0.1.13",
-    "grunt-contrib-clean": "0.6.0",
-    "grunt-contrib-csslint": "0.5.0",
-    "grunt-contrib-jshint": "0.11.2",
-    "grunt-contrib-stylus": "0.22.0",
-    "grunt-contrib-uglify": "0.9.1",
-    "grunt-contrib-stylus": "0.22.0",
-    "grunt-jsbeautifier": "0.2.10",
-    "grunt-cli": "0.1.13",
-    "grunt-contrib-uglify": "0.9.1",
-    "grunt-jsbeautifier": "0.2.10",
-    "grunt-jscs": "2.0.0",
-    "mocha": "2.2.5",
-    "mocha-lcov-reporter": "0.0.2",
-    "nconf": "0.7.2"
-  },
-  "engines": {
-    "iojs": "2.2.x"
   },
   "config": {
     "blanket": {
