@@ -1,6 +1,6 @@
 {
   "name": "webuild-events",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/webuildorg",
   "keywords": "events, facebook, meetup, eventbrite, ics, calender",
   "main": "index",
@@ -23,7 +23,7 @@
         "events/facebookEvents.js",
         "events/index.js",
         "events/meetupEvents.js",
-        "events/utils.js",
+        "events/utils.js"
       ],
       "data-cover-never": "node_modules"
     }

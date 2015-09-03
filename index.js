@@ -13,7 +13,7 @@ module.exports = {
 
     return {
       'events':events,
-      'repos': repos,
+      'passport': passport,
     };
   }
 };
