@@ -1,8 +1,5 @@
 node_modules/*
-public/js/vendor/*
 
-public/js/script.js
-public/css/style.css
 cache.json
 events.json
 run.debug.sh

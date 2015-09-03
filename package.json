@@ -1,15 +1,12 @@
 {
-  "name": "webuild-main",
-  "version": "2.12.0",
+  "name": "webuild-events",
+  "version": "1.0.0",
   "homepage": "https://github.com/webuildorg",
-  "keywords": "events, repos, repositories, facebook, meetup, eventbrite, github, ics, calender",
+  "keywords": "events, facebook, meetup, eventbrite, ics, calender",
   "main": "index",
   "dependencies": {
     "get-urls": "5.0.0",
-    "github": "0.2.4",
     "ical": "0.4.0",
-    "jsonfile": "2.2.1",
-    "mess": "0.1.2",
     "passport": "0.2.2",
     "passport-auth0": "0.3.0",
     "prequest": "0.0.3",
@@ -17,20 +14,16 @@
     "striptags": "2.0.2",
     "word-overlap": "2.4.0",
     "moment-timezone": "0.4.0",
-    "cli-color": "1.0.0",
-    "request": "2.60.0"
+    "cli-color": "1.0.0"
   },
   "config": {
     "blanket": {
       "pattern": [
-        "archives/index.js",
-        "countdown/index.js",
         "events/eventbriteEvents.js",
         "events/facebookEvents.js",
         "events/index.js",
         "events/meetupEvents.js",
         "events/utils.js",
-        "repos/index.js"
       ],
       "data-cover-never": "node_modules"
     }

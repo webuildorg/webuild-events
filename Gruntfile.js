@@ -10,10 +10,8 @@ var jsFilesToCheck = [
   'archives/**/*.js',
   'countdown/**/*.js',
   'events/**/*.js',
-  'repos/**/*.js',
   'test/archives/*.js',
-  'test/events/*.js',
-  'test/repos/*.js'
+  'test/events/*.js'
 ];
 
 module.exports = function(grunt) {
