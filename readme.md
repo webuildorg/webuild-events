@@ -5,7 +5,7 @@
 ##install
 
 ```sh
-npm i webuildorg/webuild-events
+npm i webuild-events
 ```
 
 ##usage
@@ -55,7 +55,7 @@ npm i webuildorg/webuild-events
 	```js
 	[
 	  {
-	    "id": 999999999,
+	    "id": "999999999",
 	    "name": "This is a sample event on how to fill up this file. For whitelistEvents.json: all fields are required. For blacklistEvents.json: id, formatted_time and url are required. Time fields are filled in as an example for time format DD MMM YYYY, ddd, h:mm a.",
 	    "description": "sample description",
 	    "location": "sample location",
@@ -217,7 +217,7 @@ npm i webuildorg/webuild-events
 - install the relevant dependencies:
 
 	```sh
-	npm i webuildorg/webuild-event
+	npm i webuild-event
 	npm i dotenv
 	```
 - run the file with `node index.js`
@@ -228,7 +228,7 @@ Please see `CONTRIBUTING.md` for details.
 
 #versioning
 
-Every production code has a version following the [Semantic Versioning guidelines](http://semver.org/). Run the `grunt bump`, `grunt bump:minor` or `grunt bump:major` command to bump the version accordingly and then push to production with `git push production master`.
+Following the [Semantic Versioning guidelines](http://semver.org/), run the `grunt bump`, `grunt bump:minor` or `grunt bump:major` commands to bump the version accordingly.
 
 #license
 
