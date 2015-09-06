@@ -4,13 +4,12 @@ var querystring = require('querystring');
 var Promise = require('promise');
 var moment = require('moment-timezone');
 var prequest = require('prequest');
-var fbGroups = require('./facebookGroups');
 var utils = require('./utils');
 var fbBaseUrl = 'https://graph.facebook.com/v2.1/';
 var clc = require('cli-color');
 
 module.exports = function (config){
-
+  var fbGroups = config.facebookGroups;
   function saveFacebookEvents(eventsWithVenues, row, grpIdx) {
     var thisGroupEvents = row.data || [];
 

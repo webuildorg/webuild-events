@@ -1,6 +1,5 @@
 'use strict';
 
-var icsGroups = require('./icsGroups');
 var WBEvent = require('./WBEvent');
 var ical = require('ical');
 var getUrl = require('get-urls');
@@ -9,8 +8,8 @@ var Promise = require('promise');
 var moment = require('moment-timezone');
 var clc = require('cli-color');
 
-
 module.exports = function(config){
+  var icsGroups = config.icsGroups;
 
   function trimAfterAt(uid) {
     var trimAfterAtRegex = /(\w*)@.*/;

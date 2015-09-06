@@ -1,17 +1,16 @@
 'use strict';
 
 var moment = require('moment-timezone');
-var whitelistEvents = require('./whitelistEvents');
-var blacklistEvents = require('./blacklistEvents');
 var overlap = require('word-overlap');
 var clc = require('cli-color');
-
 var eventsResult = {
   'meta': {},
   'events': []
 };
 
 module.exports = function(config){
+  var whitelistEvents = config.whitelistEvents;
+  var blacklistEvents = config.blacklistEvents;
   var API = {
     getFacebookEvents: require('./facebookEvents')(config).get,
     getMeetupEvents: require('./meetupEvents')(config).get,
