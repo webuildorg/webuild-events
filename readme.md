@@ -10,7 +10,23 @@ npm i webuildorg/webuild-events
 
 ##usage
 
-1. create a `.env` file to store all the environment variables:
+1. we will create the following folder structure:
+
+	```
+	.
+	├── .env
+	├── config
+	│   ├── blacklistEvents.json
+	│   ├── facebookGroups.json
+	│   ├── icsGroups.json
+	│   └── whitelistEvents.json
+	├── config.js
+	├── node_modules
+	│   ├── dotenv
+	│   └── webuild-events
+	└── index.js
+	```
+- create a `.env` file to store all the environment variables:
 
 	```sh
 	NODE_ENV=development
@@ -53,7 +69,7 @@ npm i webuildorg/webuild-events
 	  ...
 	]
 	```
-- create a `json` file `config/icsGroups.json.json` to list all urls of `ics` formatted events:
+- create a `json` file `config/icsGroups.json` to list all urls of `ics` formatted events:
 
 	```js
 	[
@@ -197,6 +213,12 @@ npm i webuildorg/webuild-events
 	  console.log('\nFirst event info:')
 	  console.log(events.feed.events[0])
 	}, 30000);
+	```
+- install the relevant dependencies:
+
+	```sh
+	npm i webuildorg/webuild-event
+	npm i dotenv
 	```
 - run the file with `node index.js`
 
