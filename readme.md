@@ -103,6 +103,7 @@ npm i webuild-events
 	var blacklistEvents = failSafeRequire('./config/blacklistEvents.json')
 	var icsGroups = failSafeRequire('./config/icsGroups.json');
 	var whitelistEvents = failSafeRequire('./config/whitelistEvents.json');
+	var duplicateWords = require('./config/duplicateWords.json')[0].words; // see sample in examples/duplicateWords.json
 
 	module.exports = {
 	  location: city,
@@ -119,54 +120,7 @@ npm i webuild-events
 
 	  debug: process.env.NODE_ENV === 'development',
 
-	  ignoreWordsInDuplicateEvents: [
-	    'meetup', 'group', 'event',
-
-	    'centre', 'center', 'tower', 'road',
-	    'avenue', 'ave',
-	    'building', 'city',
-	    'jalan', 'jln',
-	    'lane', 'ln',
-	    'street', 'st',
-	    'plaza', 'town', 'new',
-	    'level', 'floor',
-
-	    'first',
-	    'second',
-	    'third',
-
-	    'jan', 'january',
-	    'feb', 'february',
-	    'mar', 'march',
-	    'apr', 'april',
-	    'may',
-	    'jun', 'june',
-	    'jul', 'july',
-	    'aug', 'august',
-	    'sep', 'sept', 'september',
-	    'oct', 'october',
-	    'nov', 'november',
-	    'dec', 'december',
-	    '-',
-
-	    'mon', 'monday',
-	    'tue', 'tues', 'tuesday',
-	    'wed', 'wednesday',
-	    'thu', 'thurs', 'thursday',
-	    'fri', 'friday',
-	    'sat', 'saturday',
-	    'sun', 'sunday',
-
-	    'topic', 'create', 'talk', 'session', 'workshop', 'tell', 'share', 'coding', 'venue', 'about',
-
-	    'speaker', 'member',
-
-	    'a', 'i', 'will', 'be', 'who', 'want', 'or', 'have', 'if', 'go', 'of', 'with', 'from', 'for',
-
-	    'the', 'others', 'another', 'all',
-
-	    'your', 'you', 'our', 'you\'re', 'we\'re'
-	  ],
+	  ignoreWordsInDuplicateEvents: duplicateWords, // array of words to ignore in detecting duplicate events
 
 	  auth0: {
 	    domain: 'webuildsg.auth0.com',
