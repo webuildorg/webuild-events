@@ -1,0 +1,8 @@
+test
+.editorconfig
+.gitattributes
+.jsbeautifyrc
+.jshintrc
+.jscsrc
+CONTRIBUTING.md
+Gruntfile.js
