@@ -75,6 +75,7 @@ module.exports = function (config){
       description: utils.htmlStrip(row.description),
       location: constructAddress(row.venue),
       url: row.event_url,
+      group_id: row.group.id,
       group_name: row.group.name,
       group_url: 'http://meetup.com/' + row.group.urlname,
       formatted_time: utils.formatLocalTime(row.time, config.timezone, config.displayTimeformat),
