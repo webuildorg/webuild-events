@@ -1,9 +1,10 @@
 {
   "name": "webuild-events",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "homepage": "https://github.com/webuildorg",
   "keywords": "events, facebook, meetup, eventbrite, ics, calender",
   "main": "index",
+  "license": "MIT",
   "dependencies": {
     "get-urls": "5.0.0",
     "ical": "0.4.0",
