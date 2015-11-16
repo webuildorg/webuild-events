@@ -1,6 +1,6 @@
 {
   "name": "webuild-events",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "homepage": "https://github.com/webuildorg",
   "keywords": "events, facebook, meetup, eventbrite, ics, calender",
   "main": "index",
@@ -17,9 +17,9 @@
     "moment-timezone": "0.4.0",
     "cli-color": "1.0.0"
   },
-  "repository" :{
-    "type" : "git",
-    "url" : "git+https://github.com/webuildorg/webuild-events.git"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webuildorg/webuild-events.git"
   },
   "config": {
     "blanket": {
@@ -32,5 +32,10 @@
       ],
       "data-cover-never": "node_modules"
     }
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-bump": "^0.6.0",
+    "grunt-cli": "^0.1.13"
   }
 }
