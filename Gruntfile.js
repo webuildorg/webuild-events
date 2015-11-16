@@ -1,7 +1,5 @@
 var versionFiles = [
-  'package.json',
-  'bower.json',
-  'public/humans.txt'
+  'package.json'
 ];
 var jsFilesToCheck = [
   'Gruntfile.js',
@@ -30,7 +28,7 @@ module.exports = function(grunt) {
         tagName: 'v%VERSION%',
         tagMessage: 'Version %VERSION%',
         push: true,
-        pushTo: 'github',
+        pushTo: 'origin',
         gitDescribeOptions: '--tags --always --abbrev=1'
       }
     },
