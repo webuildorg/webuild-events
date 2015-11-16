@@ -32,6 +32,14 @@ module.exports = function(config){
     var overlappedEventDescription = overlap(event1.description, event2.description, options);
 
     if ((event1.formatted_time === event2.formatted_time) &&
+      (event1.name === event2.name)) {
+      // console.log(clc.magenta('Info: Duplicate event added: ' + event2.url));
+      // console.log(clc.magenta('Info: Duplicate event overlaps: ' + overlappedEventDescription));
+      // console.log(clc.magenta('-----------'))
+      return true;
+    }
+
+    if ((event1.formatted_time === event2.formatted_time) &&
         (overlappedEventLocation.length > 0)) {
       if (overlappedEventName.length > 0 || overlappedEventDescription.length > 2) {
         console.log(clc.magenta('Info: Duplicate event removed [' + overlappedEventDescription.length + ']: ' + event1.url));
