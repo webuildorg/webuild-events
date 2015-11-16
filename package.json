@@ -2,24 +2,35 @@
   "name": "webuild-events",
   "version": "1.2.2",
   "homepage": "https://github.com/webuildorg",
-  "keywords": "events, facebook, meetup, eventbrite, ics, calender",
+  "keywords": [
+    "events",
+    "facebook",
+    "meetup",
+    "eventbrite",
+    "ics",
+    "calender"
+  ],
+  "description": "generates a list of free and open tech events in your city",
   "main": "index",
   "license": "MIT",
-  "dependencies": {
-    "get-urls": "5.0.0",
-    "ical": "0.4.0",
-    "passport": "0.2.2",
-    "passport-auth0": "0.3.0",
-    "prequest": "0.0.3",
-    "promise": "7.0.4",
-    "striptags": "2.0.2",
-    "word-overlap": "2.4.0",
-    "moment-timezone": "0.4.0",
-    "cli-color": "1.0.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/webuildorg/webuild-events.git"
+  },
+  "author": { "name" : "Sayanee Basu",
+    "url" : "https://sayan.ee"
+  },
+  "contributors": [{
+    "name" : "Chinmay Pendharkar",
+    "url" : "https://chinpen.net"
+    }],
+  "license": "MIT",
+  "homepage": "https://github.com/webuildorg/webuild-events",
+  "bugs": {
+    "url": "https://github.com/webuildorg/webuild-events/issues"
+  },
+  "engines" : {
+    "node" : ">=0.12"
   },
   "config": {
     "blanket": {
@@ -37,5 +48,17 @@
     "grunt": "^0.4.5",
     "grunt-bump": "^0.6.0",
     "grunt-cli": "^0.1.13"
+  },
+  "dependencies": {
+    "get-urls": "5.0.0",
+    "ical": "0.4.0",
+    "passport": "0.2.2",
+    "passport-auth0": "0.3.0",
+    "prequest": "0.0.3",
+    "promise": "7.0.4",
+    "striptags": "2.0.2",
+    "word-overlap": "2.4.0",
+    "moment-timezone": "0.4.0",
+    "cli-color": "1.0.0"
   }
 }
