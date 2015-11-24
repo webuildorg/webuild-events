@@ -32,7 +32,7 @@ module.exports = function (config){
         location: row.location,
         url: 'https://www.facebook.com/events/' + row.id,
         group_name: fbGroups[ grpIdx ].name,
-        group_url: 'http://www.facebook.com/groups/' + fbGroups[ grpIdx ].id,
+        group_url: 'http://www.facebook.com/' + fbGroups[ grpIdx ].id,
         formatted_time: utils.formatLocalTime(row.start_time, config.timezone, config.displayTimeformat),
         start_time: utils.localTime(row.start_time, config.timezone).toISOString(),
         end_time: utils.localTime(row.end_time, config.timezone).toISOString()
