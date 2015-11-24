@@ -1,7 +1,7 @@
 {
   "name": "webuild-events",
   "version": "1.2.3",
-  "homepage": "https://github.com/webuildorg",
+  "homepage": "https://github.com/webuildorg/webuild-events",
   "keywords": [
     "events",
     "facebook",
@@ -12,25 +12,29 @@
   ],
   "description": "generates a list of free and open tech events in your city",
   "main": "index",
+  "scripts": {
+    "test": "grunt && mocha test",
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/webuildorg/webuild-events.git"
   },
-  "author": { "name" : "Sayanee Basu",
-    "url" : "https://sayan.ee"
+  "author": {
+    "name": "Sayanee Basu",
+    "url": "https://sayan.ee"
   },
-  "contributors": [{
-    "name" : "Chinmay Pendharkar",
-    "url" : "https://chinpen.net"
-    }],
-  "license": "MIT",
-  "homepage": "https://github.com/webuildorg/webuild-events",
+  "contributors": [
+    {
+      "name": "Chinmay Pendharkar",
+      "url": "https://chinpen.net"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/webuildorg/webuild-events/issues"
   },
-  "engines" : {
-    "node" : ">=0.12"
+  "engines": {
+    "node": ">=0.12"
   },
   "config": {
     "blanket": {
@@ -45,9 +49,12 @@
     }
   },
   "devDependencies": {
+    "chai": "^3.4.1",
     "grunt": "^0.4.5",
     "grunt-bump": "^0.6.0",
-    "grunt-cli": "^0.1.13"
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-jscs": "^2.3.0"
   },
   "dependencies": {
     "get-urls": "5.0.0",
