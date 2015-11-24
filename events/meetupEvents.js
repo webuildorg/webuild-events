@@ -5,13 +5,10 @@ var prequest = require('prequest');
 var utils = require('./utils');
 var clc = require('cli-color');
 
-
-module.exports = function (config){
-
+module.exports = function (config) {
   var blacklistGroups = config.meetupParams.blacklistGroups || [];
   var blacklistWords = config.meetupParams.blacklistWords || [];
   var blacklistRE = new RegExp(blacklistWords.join('|'), 'i');
-
 
   function constructAddress(venue) {
     var address = '';
@@ -80,7 +77,8 @@ module.exports = function (config){
       group_url: 'http://meetup.com/' + row.group.urlname,
       formatted_time: utils.formatLocalTime(row.time, config.timezone, config.displayTimeformat),
       start_time: eventTime.toISOString(),
-      end_time: eventTime.add(row.duration, 'milliseconds').toISOString()
+      end_time: eventTime.add(row.duration, 'milliseconds').toISOString(),
+      yes_rsvp_count: row.yes_rsvp_count
     }
 
     events.push(event);
@@ -128,7 +126,7 @@ module.exports = function (config){
   }
 
   return {
-    'get': function (){
+    'get': function () {
       return getGroupIds()
       .then(function(groupIds) {
         return getEventsByGroupIds(groupIds);

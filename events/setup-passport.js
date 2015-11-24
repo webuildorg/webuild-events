@@ -4,7 +4,7 @@ var passport = require('passport');
 var Auth0Strategy = require('passport-auth0');
 var clc = require('cli-color');
 
-module.exports = function(config){
+module.exports = function(config) {
 
   var strategy = new Auth0Strategy({
     domain: config.auth0.domain,
