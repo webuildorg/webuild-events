@@ -22,14 +22,16 @@ module.exports = function (config){
         return;
       }
       if (!row.end_time){
-       //TODO : add more sanitization checks for end_time
-       row.end_time = utils.localTime(row.start_time, config.timezone).add(2, 'hours').toISOString();
+        //TODO : add more sanitization checks for end_time
+        row.end_time = utils.localTime(row.start_time, config.timezone).add(2, 'hours').toISOString();
       }
+
       eventsWithVenues.push({
         id: row.id,
         name: row.name,
         description: utils.htmlStrip(row.description),
         location: row.location,
+        rsvp_count: row.attending_count,
         url: 'https://www.facebook.com/events/' + row.id,
         group_name: fbGroups[ grpIdx ].name,
         group_url: 'http://www.facebook.com/' + fbGroups[ grpIdx ].id,
@@ -47,7 +49,7 @@ module.exports = function (config){
       return prequest(fbBaseUrl + group.id + '/events?' +
         querystring.stringify({
           since: moment().utc().utcOffset('+0800').format('X'),
-          fields: 'description,name,end_time,location,timezone',
+          fields: 'description,name,end_time,location,timezone,attending_count',
           access_token: userIdentity.access_token
         })
       );
