@@ -13,7 +13,7 @@
   "description": "generates a list of free and open tech events in your city",
   "main": "index",
   "scripts": {
-    "test": "grunt && mocha test",
+    "test": "grunt && mocha test"
   },
   "license": "MIT",
   "repository": {
