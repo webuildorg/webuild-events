@@ -7,8 +7,7 @@ var utils = require('./utils');
 var Promise = require('promise');
 var clc = require('cli-color');
 
-module.exports = function(config){
-
+module.exports = function(config) {
   var baseUrl = config.eventbriteParams.url;
   var techCategories = config.eventbriteParams.categories;
 
@@ -74,7 +73,7 @@ module.exports = function(config){
   }
 
   return {
-    'get': function(){
+    'get': function() {
       var allEvents;
       var getEventsForPage = function(pageNum) {
         return prequest({

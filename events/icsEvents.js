@@ -8,7 +8,7 @@ var Promise = require('promise');
 var moment = require('moment-timezone');
 var clc = require('cli-color');
 
-module.exports = function(config){
+module.exports = function(config) {
   var icsGroups = config.icsGroups;
 
   function trimAfterAt(uid) {
@@ -83,8 +83,7 @@ module.exports = function(config){
   }
 
   return {
-
-    'get': function(){
+    'get': function() {
       var normEvents;
 
       return new Promise(function(resolve) {
