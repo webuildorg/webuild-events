@@ -8,7 +8,7 @@ var utils = require('./utils');
 var fbBaseUrl = 'https://graph.facebook.com/v2.1/';
 var clc = require('cli-color');
 
-module.exports = function (config){
+module.exports = function (config) {
   var fbGroups = config.facebookGroups;
   function saveFacebookEvents(eventsWithVenues, row, grpIdx) {
     var thisGroupEvents = row.data || [];
@@ -141,7 +141,7 @@ module.exports = function (config){
   }
 
   return {
-    'get': function(){
+    'get': function() {
       return getFacebookUsers().then(function(allUsers) {
         return filterValidFacebookUsers(allUsers).then(function(users) {
           return getAllFacebookEvents(users);

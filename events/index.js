@@ -8,7 +8,7 @@ var eventsResult = {
   'events': []
 };
 
-module.exports = function(config){
+module.exports = function(config) {
   var whitelistEvents = config.whitelistEvents;
   var blacklistEvents = config.blacklistEvents;
   var API = {
@@ -115,5 +115,3 @@ module.exports = function(config){
     }
   }
 };
-
-
