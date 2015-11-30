@@ -80,8 +80,7 @@ module.exports = function (config) {
       group_url: 'http://meetup.com/' + row.group.urlname,
       formatted_time: utils.formatLocalTime(row.time, config.timezone, config.displayTimeformat),
       start_time: eventTime.toISOString(),
-      end_time: eventTime.add(row.duration, 'milliseconds').toISOString(),
-      yes_rsvp_count: row.yes_rsvp_count
+      end_time: eventTime.add(row.duration, 'milliseconds').toISOString()
     }
 
     events.push(event);
