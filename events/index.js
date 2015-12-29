@@ -11,6 +11,10 @@ var eventsToday = {
   'meta': {},
   'events': []
 };
+var eventsHour = {
+  'meta': {},
+  'events': []
+}
 
 module.exports = function(config) {
   var whitelistEvents = config.whitelistEvents;
@@ -86,6 +90,12 @@ module.exports = function(config) {
       eventsToday.meta.location = eventsResult.meta.location;
       eventsToday.meta.api_version = eventsResult.meta.api_version;
       eventsToday.meta.total_events = eventsToday.events.length;
+
+      eventsHour.events = getCurrentHourData(eventsResult);
+      eventsHour.meta.generated_at = eventsResult.meta.generated_at;
+      eventsHour.meta.location = eventsResult.meta.location;
+      eventsHour.meta.api_version = eventsResult.meta.api_version;
+      eventsHour.meta.total_events = eventsToday.events.length;
     }).catch(function(err) {
       console.error(clc.red('Error: Failed to add %s events: %s'), type, err.statusCode || err);
     });
@@ -114,9 +124,16 @@ module.exports = function(config) {
     })
   }
 
+  function getCurrentHourData(data) {
+    return data.events.filter(function (element) {
+      return moment(element.formatted_time, 'DD MMM YYYY, ddd, hh:mm a').isBefore(moment().add(1, 'hour'))
+    })
+  }
+
   return {
     feed: eventsResult,
     day: eventsToday,
+    hour: eventsHour,
     update: function() {
       eventsResult.meta = {
         'generated_at': new Date().toISOString(),
