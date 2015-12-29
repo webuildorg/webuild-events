@@ -7,6 +7,10 @@ var eventsResult = {
   'meta': {},
   'events': []
 };
+var eventsToday = {
+  'meta': {},
+  'events': []
+};
 
 module.exports = function(config) {
   var whitelistEvents = config.whitelistEvents;
@@ -65,7 +69,7 @@ module.exports = function(config) {
   function addEvents(type) {
     API[ 'get' + type + 'Events' ]().then(function(data) {
       data = data || [];
-      var whiteEvents = data.filter(function(evt) { // filter black listed ids
+      var whiteEvents = data.filter(function(evt) {
         return !blacklistEvents.some(function(blackEvent) {
           return blackEvent.id === evt.id;
         });
@@ -74,8 +78,14 @@ module.exports = function(config) {
       eventsResult.events = eventsResult.events.filter(afterToday);
       eventsResult.events.sort(timeComparer);
       eventsResult.events = removeDuplicates(eventsResult.events);
-      console.log(clc.green('Success: Added ' + whiteEvents.length + ' ' + type + ' events'));
       eventsResult.meta.total_events = eventsResult.events.length;
+      console.log(clc.green('Success: Added ' + whiteEvents.length + ' ' + type + ' events'));
+
+      eventsToday.events = getCurrentDayData(eventsResult);
+      eventsToday.meta.generated_at = eventsResult.meta.generated_at;
+      eventsToday.meta.location = eventsResult.meta.location;
+      eventsToday.meta.api_version = eventsResult.meta.api_version;
+      eventsToday.meta.total_events = eventsToday.events.length;
     }).catch(function(err) {
       console.error(clc.red('Error: Failed to add %s events: %s'), type, err.statusCode || err);
     });
@@ -98,8 +108,15 @@ module.exports = function(config) {
     return uniqueEvents;
   }
 
+  function getCurrentDayData(data) {
+    return data.events.filter(function(element) {
+      return moment(data.meta.generated_at).diff(moment(element.start_time), 'days') === 0;
+    })
+  }
+
   return {
     feed: eventsResult,
+    day: eventsToday,
     update: function() {
       eventsResult.meta = {
         'generated_at': new Date().toISOString(),
