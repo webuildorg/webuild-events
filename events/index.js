@@ -134,6 +134,19 @@ module.exports = function(config) {
     feed: eventsResult,
     day: eventsToday,
     hour: eventsHour,
+    get: function(count) {
+      var answer = {
+        meta: {
+          'generated_at': new Date().toISOString(),
+          'location': config.city,
+          'api_version': config.api_version,
+          'total_events': parseInt(count)
+        },
+        events: eventsResult.events.slice(0, parseInt(count))
+      }
+
+      return answer
+    },
     update: function() {
       eventsResult.meta = {
         'generated_at': new Date().toISOString(),
