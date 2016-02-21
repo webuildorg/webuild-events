@@ -137,7 +137,17 @@ module.exports = function(config) {
       getEventOrganizer(whitelistEvents).then(function() {
         whitelistEvents.reduce(addEventbriteEvent, events)
         resolve(events)
+      }).catch(function(error) {
+        console.error(clc.red('Error: Getting eventbrite.com event organizers'))
+        console.error(clc.red(err))
+        console.error(clc.red(err.stack))
+        reject(err)
       })
+    }).catch(function(error) {
+      console.error(clc.red('Error: Getting eventbrite.com event venues'))
+      console.error(clc.red(err))
+      console.error(clc.red(err.stack))
+      reject(err)
     })
   }
 
