@@ -25,13 +25,17 @@ module.exports = function(config) {
       headers: headers
     }
   }
-  var urlParamsForSearchVenue = {
-    url: config.eventbriteParams.venueUrl + eachEvent.venue_id,
-    headers: headers
+  var urlParamsForSearchVenue = function(eachEvent) {
+    return {
+      url: config.eventbriteParams.venueUrl + eachEvent.venue_id,
+      headers: headers
+    }
   }
-  var urlParamsForSearchOrganizer = {
-    url: config.eventbriteParams.organizerUrl + eachEvent.organizer_id,
-    headers: headers
+  var urlParamsForSearchOrganizer = function(eachEvent) {
+    return {
+      url: config.eventbriteParams.organizerUrl + eachEvent.organizer_id,
+      headers: headers
+    }
   }
 
   function addEventbriteEvent(arr, event) {
@@ -77,12 +81,13 @@ module.exports = function(config) {
     })
   }
 
+  var getEventsForPage = function(pageNum) {
+    return prequest(urlParamsForSearch(pageNum))
+  };
+
   return {
     'get': function() {
       var allEvents
-      var getEventsForPage = function(pageNum) {
-        return prequest(urlParamsForSearch(pageNum))
-      };
 
       return getEventsForPage(1).then(function(data) {
         console.log(clc.blue('Info: Found ' + data.pagination.object_count + ' eventbrite.com free events found in ' + config.city + ' in ' + data.pagination.page_count + ' pages'))
@@ -112,7 +117,7 @@ module.exports = function(config) {
             console.log(clc.blue('Info: Found ' + techEvents.length + ' eventbrite.com tech events'))
 
             techEvents.forEach(function(eachEvent) {
-              var searchResult = prequest(urlParamsForSearchVenue).then(function(addr) {
+              var searchResult = prequest(urlParamsForSearchVenue(eachEvent)).then(function(addr) {
                 eachEvent.addr = addr
               })
 
@@ -131,7 +136,7 @@ module.exports = function(config) {
               console.log(clc.blue('Info: Found ' + whitelistEvents.length + ' allowed eventbrite.com events'))
 
               whitelistEvents.forEach(function(eachEvent) {
-                var searchResult = prequest(urlParamsForSearchOrganizer).then(function(org) {
+                var searchResult = prequest(urlParamsForSearchOrganizer(eachEvent)).then(function(org) {
                   eachEvent.organizer = org
                 })
 
