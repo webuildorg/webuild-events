@@ -83,7 +83,62 @@ module.exports = function(config) {
 
   var getEventsForPage = function(pageNum) {
     return prequest(urlParamsForSearch(pageNum))
-  };
+  }
+
+  function getEventVenue(events) {
+    var eventVenueSearchResults = []
+
+    events.forEach(function(eachEvent) {
+      var searchResult = prequest(urlParamsForSearchVenue(eachEvent)).then(function(addr) {
+        eachEvent.addr = addr
+      })
+
+      eventVenueSearchResults.push(searchResult)
+    })
+
+    return utils.waitAllPromises(eventVenueSearchResults)
+  }
+
+  function getEventOrganizer(events) {
+    var eventOrgSearchResults = []
+
+    events.forEach(function(eachEvent) {
+      var searchResult = prequest(urlParamsForSearchOrganizer(eachEvent)).then(function(org) {
+        eachEvent.organizer = org
+      })
+
+      eventOrgSearchResults.push(searchResult)
+    })
+
+    return utils.waitAllPromises(eventOrgSearchResults)
+  }
+
+  function filterEvents(allEvents, resolve) {
+    var techEvents
+    var freeEventsWithVenue
+    var whitelistEvents
+    var events = []
+
+    techEvents = allEvents.filter(isInTechCategory)
+    console.log(clc.blue('Info: Found ' + techEvents.length + ' eventbrite.com tech events'))
+
+    getEventVenue(techEvents).then(function() {
+      techEvents = techEvents.filter(hasVenue)
+      techEvents.forEach(function(eachEvent) {
+        eachEvent.location = constructLocation(eachEvent.addr)
+      })
+
+      console.log(clc.blue('Info: Found ' + techEvents.length + ' eventbrite.com with valid location'))
+
+      whitelistEvents = techEvents.filter(isInWhitelist);
+      console.log(clc.blue('Info: Found ' + whitelistEvents.length + ' allowed eventbrite.com events'))
+
+      getEventOrganizer(whitelistEvents).then(function() {
+        whitelistEvents.reduce(addEventbriteEvent, events)
+        resolve(events)
+      })
+    })
+  }
 
   return {
     'get': function() {
@@ -106,48 +161,7 @@ module.exports = function(config) {
               allEvents = allEvents.concat(data.events)
             })
 
-            var techEvents
-            var freeEventsWithVenue
-            var whitelistEvents
-            var events = []
-            var eventVenueSearchResults = []
-            var eventOrgSearchResults = []
-
-            techEvents = allEvents.filter(isInTechCategory)
-            console.log(clc.blue('Info: Found ' + techEvents.length + ' eventbrite.com tech events'))
-
-            techEvents.forEach(function(eachEvent) {
-              var searchResult = prequest(urlParamsForSearchVenue(eachEvent)).then(function(addr) {
-                eachEvent.addr = addr
-              })
-
-              eventVenueSearchResults.push(searchResult)
-            })
-
-            utils.waitAllPromises(eventVenueSearchResults).then(function() {
-              techEvents = techEvents.filter(hasVenue)
-              techEvents.forEach(function(eachEvent) {
-                eachEvent.location = constructLocation(eachEvent.addr)
-              })
-
-              console.log(clc.blue('Info: Found ' + techEvents.length + ' eventbrite.com with valid location'))
-
-              whitelistEvents = techEvents.filter(isInWhitelist);
-              console.log(clc.blue('Info: Found ' + whitelistEvents.length + ' allowed eventbrite.com events'))
-
-              whitelistEvents.forEach(function(eachEvent) {
-                var searchResult = prequest(urlParamsForSearchOrganizer(eachEvent)).then(function(org) {
-                  eachEvent.organizer = org
-                })
-
-                eventOrgSearchResults.push(searchResult)
-              })
-
-              utils.waitAllPromises(eventOrgSearchResults).then(function() {
-                whitelistEvents.reduce(addEventbriteEvent, events)
-                resolve(events)
-              })
-            })
+            filterEvents(allEvents, resolve)
           }).catch(function(err) {
             console.error(clc.red('Error: Getting eventbrite.com events'))
             console.error(clc.red(err))
