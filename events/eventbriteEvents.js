@@ -10,6 +10,26 @@ var clc = require('cli-color');
 module.exports = function(config) {
   var baseUrl = config.eventbriteParams.url;
   var techCategories = config.eventbriteParams.categories;
+  var headers = {
+    Authorization: 'Bearer ' + config.eventbriteParams.token
+  }
+
+  function addEventbriteEvent(arr, event) {
+    arr.push({
+      id: event.id,
+      name: event.name.text || '',
+      description: event.description.text || '',
+      location: event.location,
+      url: event.url,
+      group_name: event.organizer.name,
+      group_url: event.organizer.url,
+      formatted_time: utils.formatLocalTime(event.start.utc, config.timezone, config.displayTimeformat),
+      start_time: event.start.utc,
+      end_time: event.end.utc
+    })
+
+    return arr
+  }
 
   function constructLocation(venue) {
     var addr = venue.address;
@@ -28,8 +48,7 @@ module.exports = function(config) {
   }
 
   function isInTechCategory(event) {
-    // 'categories': '102, 113, 199',
-    return event && event.category_id && techCategories.indexOf(event.category_id) >= 0;
+    return event && event.category_id && techCategories.indexOf(event.category_id) >= 0
   }
 
   function isInWhitelist(thisEvent) {
@@ -38,26 +57,9 @@ module.exports = function(config) {
     })
   }
 
-  function addEventbriteEvent(arr, event) {
-    arr.push({
-      id: event.id,
-      name: event.name.text || '',
-      description: event.description.text || '',
-      location: event.location,
-      url: event.url,
-      group_name: event.organizer.name,
-      group_url: event.organizer.url,
-      formatted_time: utils.formatLocalTime(event.start.utc, config.timezone, config.displayTimeformat),
-      start_time: event.start.utc,
-      end_time: event.end.utc
-    });
-
-    return arr;
-  }
-
   return {
     'get': function() {
-      var allEvents;
+      var allEvents
       var getEventsForPage = function(pageNum) {
         return prequest({
           url: baseUrl + '?' + querystring.stringify({
@@ -67,45 +69,41 @@ module.exports = function(config) {
             'page': pageNum,
             'price': 'free'
           }),
-          headers: {
-            Authorization: 'Bearer ' + config.eventbriteParams.token
-          }
+          headers: headers
         })
       };
 
       return getEventsForPage(1).then(function(data) {
-        console.log(clc.blue('Info: Found ' + data.pagination.object_count + ' eventbrite.com free events found in ' + config.city + ' in ' + data.pagination.page_count + ' pages'));
-        allEvents = data.events;
+        console.log(clc.blue('Info: Found ' + data.pagination.object_count + ' eventbrite.com free events found in ' + config.city + ' in ' + data.pagination.page_count + ' pages'))
+        allEvents = data.events
 
-        var promisesArray = [];
-        var pageCount;
+        var promisesArray = []
+        var pageCount
 
         for (pageCount = 2; pageCount <= data.pagination.page_count; pageCount++) {
-          promisesArray.push(getEventsForPage(pageCount));
+          promisesArray.push(getEventsForPage(pageCount))
         }
 
         return new Promise(function(resolve, reject) {
           utils.waitAllPromises(promisesArray).then(function(dataArray) {
             dataArray.forEach(function(data) {
-              allEvents = allEvents.concat(data.events);
-            });
+              allEvents = allEvents.concat(data.events)
+            })
 
-            var techEvents;
-            var freeEventsWithVenue;
-            var whitelistEvents;
-            var events = [];
+            var techEvents
+            var freeEventsWithVenue
+            var whitelistEvents
+            var events = []
             var eventVenueSearchResults = []
             var eventOrgSearchResults = []
 
-            techEvents = allEvents.filter(isInTechCategory);
+            techEvents = allEvents.filter(isInTechCategory)
             console.log(clc.blue('Info: Found ' + techEvents.length + ' eventbrite.com tech events'))
 
             techEvents.forEach(function(eachEvent) {
               var searchResult = prequest({
                 url: config.eventbriteParams.venueUrl + eachEvent.venue_id,
-                headers: {
-                  Authorization: 'Bearer ' + config.eventbriteParams.token
-                }
+                headers: headers
               }).then(function(addr) {
                 eachEvent.addr = addr
               })
@@ -122,14 +120,12 @@ module.exports = function(config) {
               console.log(clc.blue('Info: Found ' + techEvents.length + ' eventbrite.com with valid location'))
 
               whitelistEvents = techEvents.filter(isInWhitelist);
-              console.log(clc.blue('Info: Found ' + whitelistEvents.length + ' allowed eventbrite.com events'));
+              console.log(clc.blue('Info: Found ' + whitelistEvents.length + ' allowed eventbrite.com events'))
 
               whitelistEvents.forEach(function(eachEvent) {
                 var searchResult = prequest({
                   url: config.eventbriteParams.organizerUrl + eachEvent.organizer_id,
-                  headers: {
-                    Authorization: 'Bearer ' + config.eventbriteParams.token
-                  }
+                  headers: headers
                 }).then(function(org) {
                   eachEvent.organizer = org
                 })
@@ -138,18 +134,18 @@ module.exports = function(config) {
               })
 
               utils.waitAllPromises(eventOrgSearchResults).then(function() {
-                whitelistEvents.reduce(addEventbriteEvent, events);
-                resolve(events);
+                whitelistEvents.reduce(addEventbriteEvent, events)
+                resolve(events)
               })
             })
           }).catch(function(err) {
-            console.error(clc.red('Error: Getting eventbrite.com events'));
-            console.error(clc.red(err));
+            console.error(clc.red('Error: Getting eventbrite.com events'))
+            console.error(clc.red(err))
             console.error(clc.red(err.stack))
-            reject(err);
-          });
-        });
-      });
+            reject(err)
+          })
+        })
+      })
     }
   }
-};
+}
