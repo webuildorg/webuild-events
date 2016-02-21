@@ -13,6 +13,26 @@ module.exports = function(config) {
   var headers = {
     Authorization: 'Bearer ' + config.eventbriteParams.token
   }
+  var urlParamsForSearch = function(pageNum) {
+    return {
+      url: baseUrl + '?' + querystring.stringify({
+        'venue.country': config.symbol,
+        'venue.city': config.city,
+        'start_date.range_end': moment().add(2, 'months').format('YYYY-MM-DD') + 'T00:00:00Z',
+        'page': pageNum,
+        'price': 'free'
+      }),
+      headers: headers
+    }
+  }
+  var urlParamsForSearchVenue = {
+    url: config.eventbriteParams.venueUrl + eachEvent.venue_id,
+    headers: headers
+  }
+  var urlParamsForSearchOrganizer = {
+    url: config.eventbriteParams.organizerUrl + eachEvent.organizer_id,
+    headers: headers
+  }
 
   function addEventbriteEvent(arr, event) {
     arr.push({
@@ -61,16 +81,7 @@ module.exports = function(config) {
     'get': function() {
       var allEvents
       var getEventsForPage = function(pageNum) {
-        return prequest({
-          url: baseUrl + '?' + querystring.stringify({
-            'venue.country': config.symbol,
-            'venue.city': config.city,
-            'start_date.range_end': moment().add(2, 'months').format('YYYY-MM-DD') + 'T00:00:00Z',
-            'page': pageNum,
-            'price': 'free'
-          }),
-          headers: headers
-        })
+        return prequest(urlParamsForSearch(pageNum))
       };
 
       return getEventsForPage(1).then(function(data) {
@@ -101,10 +112,7 @@ module.exports = function(config) {
             console.log(clc.blue('Info: Found ' + techEvents.length + ' eventbrite.com tech events'))
 
             techEvents.forEach(function(eachEvent) {
-              var searchResult = prequest({
-                url: config.eventbriteParams.venueUrl + eachEvent.venue_id,
-                headers: headers
-              }).then(function(addr) {
+              var searchResult = prequest(urlParamsForSearchVenue).then(function(addr) {
                 eachEvent.addr = addr
               })
 
@@ -123,10 +131,7 @@ module.exports = function(config) {
               console.log(clc.blue('Info: Found ' + whitelistEvents.length + ' allowed eventbrite.com events'))
 
               whitelistEvents.forEach(function(eachEvent) {
-                var searchResult = prequest({
-                  url: config.eventbriteParams.organizerUrl + eachEvent.organizer_id,
-                  headers: headers
-                }).then(function(org) {
+                var searchResult = prequest(urlParamsForSearchOrganizer).then(function(org) {
                   eachEvent.organizer = org
                 })
 
