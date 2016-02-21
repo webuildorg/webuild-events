@@ -97,7 +97,7 @@ module.exports = function(config) {
       eventsHour.meta.api_version = eventsResult.meta.api_version;
       eventsHour.meta.total_events = eventsToday.events.length;
     }).catch(function(err) {
-      console.error(clc.red('Error: Failed to add %s events: %s'), type, err.statusCode || err);
+      console.error(clc.red('Error: Failed to add %s events: HTTP Status Code %s'), type, err.statusCode || err);
     });
   }
 
