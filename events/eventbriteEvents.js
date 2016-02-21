@@ -45,6 +45,7 @@ module.exports = function(config) {
       description: event.description.text || '',
       location: event.location,
       url: event.url,
+      group_id: event.organizer_id,
       group_name: event.organizer.name,
       group_url: event.organizer.url,
       formatted_time: utils.formatLocalTime(event.start.utc, config.timezone, config.displayTimeformat),
