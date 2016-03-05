@@ -129,7 +129,7 @@ module.exports = function (config) {
           return groupIds;
         }, []);
     }).catch(function(err) {
-      logger.error(err));
+      logger.error(err);
     });
   }
 
