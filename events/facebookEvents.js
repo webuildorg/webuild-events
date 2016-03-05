@@ -7,6 +7,13 @@ var prequest = require('prequest');
 var utils = require('./utils');
 var fbBaseUrl = 'https://graph.facebook.com/v2.1/';
 var clc = require('cli-color');
+var logger = require('tracer').colorConsole({
+  format: '{{timestamp}} <{{title}}> ({{path}}:{{line}}:{{pos}}:{{method}}) {{message}}',
+  dateformat: 'mmm dd HH:MM:ss',
+  preprocess:  function(data) {
+    data.path = data.path.replace(process.cwd(), '');
+  }
+});
 
 module.exports = function (config) {
   var fbGroups = config.facebookGroups;
@@ -57,11 +64,11 @@ module.exports = function (config) {
 
     return new Promise(function(resolve, reject) {
       utils.waitAllPromises(groups).then(function(groupsEvents) {
-        console.log(clc.blue('Info: Found ' + groupsEvents.length + ' facebook.com groups'));
+        logger.info('Found ' + groupsEvents.length + ' facebook.com groups');
         var eventsWithVenues = [];
 
         groupsEvents.reduce(saveFacebookEvents, eventsWithVenues);
-        console.log(clc.blue('Info: Found ' + eventsWithVenues.length + ' facebook.com events'));
+        logger.info('Found ' + eventsWithVenues.length + ' facebook.com events');
         resolve(eventsWithVenues);
       }).catch(function(err) {
         console.error(clc.red('Error: Getting facebook.com events with: ' + JSON.stringify(userIdentity)));
@@ -129,14 +136,14 @@ module.exports = function (config) {
     return utils.waitAllPromises(groupPromises).then(function(userGroups) {
       var validusers
 
-      console.log(clc.blue('Info: Found ' + userGroups.length + ' facebook.com authorized users'));
+      logger.info('Found ' + userGroups.length + ' facebook.com authorized users');
       validusers = users.filter(function(user, idx) {
         return userGroups[ idx ].data && userGroups[ idx ].data.length > 0
       });
-      console.log(clc.blue('Info: Found ' + validusers.length + ' facebook.com users with accessible groups'));
+      logger.info('Found ' + validusers.length + ' facebook.com users with accessible groups');
       return validusers;
     }).catch(function(err) {
-      console.error(clc.red('Error: Getting facebook.com groups with all user tokens: ' + err));
+      logger.error('Getting facebook.com groups with all user tokens: ' + err);
     });
   }
 
@@ -147,7 +154,7 @@ module.exports = function (config) {
           return getAllFacebookEvents(users);
         });
       }).catch(function(err) {
-        console.error('getFacebookEvents(): ' + err);
+        logger.error(err);
       });
     }
   }

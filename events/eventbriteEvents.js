@@ -6,6 +6,13 @@ var moment = require('moment-timezone');
 var utils = require('./utils');
 var Promise = require('promise');
 var clc = require('cli-color');
+var logger = require('tracer').colorConsole({
+  format: '{{timestamp}} <{{title}}> ({{path}}:{{line}}:{{pos}}:{{method}}) {{message}}',
+  dateformat: 'mmm dd HH:MM:ss',
+  preprocess:  function(data) {
+    data.path = data.path.replace(process.cwd(), '');
+  }
+});
 
 module.exports = function(config) {
   var baseUrl = config.eventbriteParams.url;
@@ -121,7 +128,7 @@ module.exports = function(config) {
     var events = []
 
     techEvents = allEvents.filter(isInTechCategory)
-    console.log(clc.blue('Info: Found ' + techEvents.length + ' eventbrite.com tech events'))
+    logger.info('Found ' + techEvents.length + ' eventbrite.com tech events')
 
     getEventVenue(techEvents).then(function() {
       techEvents = techEvents.filter(hasVenue)
@@ -129,28 +136,28 @@ module.exports = function(config) {
         eachEvent.location = constructLocation(eachEvent.addr)
       })
 
-      console.log(clc.blue('Info: Found ' + techEvents.length + ' eventbrite.com with valid location'))
+      logger.info('Found ' + techEvents.length + ' eventbrite.com with valid location')
 
       whitelistEvents = techEvents.filter(isInWhitelist);
-      console.log(clc.blue('Info: Found ' + whitelistEvents.length + ' allowed eventbrite.com events'))
+      logger.info('Found ' + whitelistEvents.length + ' allowed eventbrite.com events')
 
       getEventOrganizer(whitelistEvents).then(function() {
         whitelistEvents.reduce(addEventbriteEvent, events)
         resolve(events)
       }).catch(function(err) {
-        console.error(clc.red('Error: Getting eventbrite.com event organizers'))
-        console.error(clc.red('Status code: ', err.statusCode))
-        console.error(clc.red('Error message: ', err.message))
-        console.error(clc.red(err))
-        console.error(clc.red(err.stack))
+        logger.error('Getting eventbrite.com event organizers')
+        logger.error('Status code: ', err.statusCode)
+        logger.error('Message: ', err.message)
+        logger.error(err)
+        logger.error(err.stack)
         reject(err)
       })
     }).catch(function(err) {
-      console.error(clc.red('Error: Getting eventbrite.com event venues'))
-      console.error(clc.red('Status code: ', err.statusCode))
-      console.error(clc.red('Error message: ', err.message))
-      console.error(clc.red(err))
-      console.error(clc.red(err.stack))
+      logger.error('Getting eventbrite.com event venues')
+      logger.error('Status code: ', err.statusCode)
+      logger.error('Message: ', err.message)
+      logger.error(err)
+      logger.error(err.stack)
       reject(err)
     })
   }
@@ -160,7 +167,7 @@ module.exports = function(config) {
       var allEvents
 
       return getEventsForPage(1).then(function(data) {
-        console.log(clc.blue('Info: Found ' + data.pagination.object_count + ' eventbrite.com free events found in ' + config.city + ' in ' + data.pagination.page_count + ' pages'))
+        logger.info('Found ' + data.pagination.object_count + ' eventbrite.com free events found in ' + config.city + ' in ' + data.pagination.page_count + ' pages')
         allEvents = data.events
 
         var promisesArray = []
@@ -178,9 +185,9 @@ module.exports = function(config) {
 
             filterEvents(allEvents, resolve)
           }).catch(function(err) {
-            console.error(clc.red('Error: Getting eventbrite.com events'))
-            console.error(clc.red(err))
-            console.error(clc.red(err.stack))
+            logger.error('Getting eventbrite.com events')
+            logger.error(err)
+            logger.error(err.stack)
             reject(err)
           })
         })

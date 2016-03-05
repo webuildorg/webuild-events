@@ -57,15 +57,16 @@
     "grunt-jscs": "^2.3.0"
   },
   "dependencies": {
+    "cli-color": "1.0.0",
     "get-urls": "5.0.0",
     "ical": "0.4.0",
+    "moment-timezone": "0.4.0",
     "passport": "0.2.2",
     "passport-auth0": "0.3.0",
     "prequest": "0.0.3",
     "promise": "7.0.4",
     "striptags": "2.0.2",
-    "word-overlap": "2.4.0",
-    "moment-timezone": "0.4.0",
-    "cli-color": "1.0.0"
+    "tracer": "^0.8.3",
+    "word-overlap": "2.4.0"
   }
 }

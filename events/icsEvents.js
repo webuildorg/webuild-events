@@ -7,6 +7,13 @@ var utils = require('./utils');
 var Promise = require('promise');
 var moment = require('moment-timezone');
 var clc = require('cli-color');
+var logger = require('tracer').colorConsole({
+  format: '{{timestamp}} <{{title}}> ({{path}}:{{line}}:{{pos}}:{{method}}) {{message}}',
+  dateformat: 'mmm dd HH:MM:ss',
+  preprocess:  function(data) {
+    data.path = data.path.replace(process.cwd(), '');
+  }
+});
 
 module.exports = function(config) {
   var icsGroups = config.icsGroups;
@@ -51,7 +58,7 @@ module.exports = function(config) {
     icsGroups.forEach(function(group) {
       ical.fromURL(group.ics_url, {}, function(err, data) {
         if (err) {
-          console.log(clc.yellow('Warn: Cannot read ICS Group ' + group.group_name + ': ' + err));
+          logger.warn('Cannot read ICS Group ' + group.group_name + ': ' + err);
         } else {
           var thisEvent = {};
 
@@ -106,9 +113,9 @@ module.exports = function(config) {
           })
 
           normEvents = normEvents.filter(hasLocation);
-          console.log(clc.blue('Info: Found ' + normEvents.length + ' ics events in total'));
+          logger.info('Found ' + normEvents.length + ' ics events in total');
           normEvents = normEvents.filter(isInFuture);
-          console.log(clc.blue('Info: Found ' + normEvents.length + ' ics future events in SG with location'));
+          logger.info('Found ' + normEvents.length + ' ics future events in SG with location');
 
           resolve(normEvents);
         });

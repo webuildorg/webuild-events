@@ -4,6 +4,13 @@ var querystring = require('querystring');
 var prequest = require('prequest');
 var utils = require('./utils');
 var clc = require('cli-color');
+var logger = require('tracer').colorConsole({
+  format: '{{timestamp}} <{{title}}> ({{path}}:{{line}}:{{pos}}:{{method}}) {{message}}',
+  dateformat: 'mmm dd HH:MM:ss',
+  preprocess:  function(data) {
+    data.path = data.path.replace(process.cwd(), '');
+  }
+});
 
 module.exports = function (config) {
   var blacklistGroups = config.meetupParams.blacklistGroups || [];
@@ -99,11 +106,11 @@ module.exports = function (config) {
     return prequest(url).then(function(data) {
       var events = [];
       data.results.reduce(normalizeGroupEvents, events);
-      console.log(clc.blue('Info: Found ' + events.length + ' meetup.com group events with venues'));
+      logger.info('Info: Found ' + events.length + ' meetup.com group events with venues');
       return events;
     }).catch(function(err) {
-      console.error(clc.red('Error: getEventsByGroupIds():'));
-      console.error(clc.red(err));
+      logger.error('Error: getEventsByGroupIds():');
+      logger.error(err);
     });
   }
 
@@ -114,7 +121,7 @@ module.exports = function (config) {
       querystring.stringify(config.meetupParams);
 
     return prequest(url).then(function(data) {
-      console.log(clc.blue('Info: Found ' + data.results.length + ' meetup.com groups'));
+      logger.info('Found ' + data.results.length + ' meetup.com groups');
       return data.results
         .filter(isValidGroup)
         .reduce(function(groupIds, row) {
@@ -122,8 +129,7 @@ module.exports = function (config) {
           return groupIds;
         }, []);
     }).catch(function(err) {
-      console.error(clc.red('Error: getGroupIds():'));
-      console.error(clc.red(err));
+      logger.error(err));
     });
   }
 
@@ -134,8 +140,7 @@ module.exports = function (config) {
         return getEventsByGroupIds(groupIds);
       })
       .catch(function(err) {
-        console.error(clc.red('Error: getGroupEvents():'));
-        console.error(clc.red(err));
+        logger.error(err);
       });
     }
   }
