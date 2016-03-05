@@ -15,6 +15,13 @@ var eventsHour = {
   'meta': {},
   'events': []
 }
+var logger = require('tracer').colorConsole({
+  format: '{{timestamp}} <{{title}}> ({{path}}:{{line}}:{{pos}}:{{method}}) {{message}}',
+  dateformat: 'mmm dd HH:MM:ss',
+  preprocess:  function(data) {
+    data.path = data.path.replace(process.cwd(), '');
+  }
+});
 
 module.exports = function(config) {
   var whitelistEvents = config.whitelistEvents;
@@ -50,7 +57,7 @@ module.exports = function(config) {
     if ((event1.formatted_time === event2.formatted_time) &&
         (overlappedEventLocation.length > 0)) {
       if (overlappedEventName.length > 0 || overlappedEventDescription.length > 2) {
-        console.log(clc.magenta('Info: Duplicate event removed [' + overlappedEventDescription.length + ']: ' + event1.url));
+        logger.info('Duplicate event removed [' + overlappedEventDescription.length + ']: ' + event1.url);
         // console.log(clc.magenta('Info: Duplicate event added: ' + event2.url));
         // console.log(clc.magenta('Info: Duplicate event overlaps: ' + overlappedEventDescription));
         // console.log(clc.magenta('-----------'))
@@ -83,7 +90,7 @@ module.exports = function(config) {
       eventsResult.events.sort(timeComparer);
       eventsResult.events = removeDuplicates(eventsResult.events);
       eventsResult.meta.total_events = eventsResult.events.length;
-      console.log(clc.green('Success: Added ' + whiteEvents.length + ' ' + type + ' events'));
+      logger.info('Success: Added ' + whiteEvents.length + ' ' + type + ' events');
 
       eventsToday.events = getCurrentDayData(eventsResult);
       eventsToday.meta.generated_at = eventsResult.meta.generated_at;
@@ -97,7 +104,7 @@ module.exports = function(config) {
       eventsHour.meta.api_version = eventsResult.meta.api_version;
       eventsHour.meta.total_events = eventsToday.events.length;
     }).catch(function(err) {
-      console.error(clc.red('Error: Failed to add %s events: HTTP Status Code %s'), type, err.statusCode || err);
+      logger.error('Failed to add ' + type + ' events: HTTP Status Code ' + err.statusCode || err);
     });
   }
 
@@ -154,7 +161,7 @@ module.exports = function(config) {
         'api_version': config.api_version
       }
       eventsResult.events = whitelistEvents.filter(afterToday);
-      console.log('Info: Updating the events feed... this may take a while');
+      logger.info('Updating the events feed... this may take a while');
       addEvents('Meetup');
       addEvents('Facebook');
       addEvents('Eventbrite');
