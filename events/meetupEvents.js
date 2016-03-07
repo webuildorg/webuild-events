@@ -45,7 +45,6 @@ module.exports = function (config) {
   }
 
   function normalizeGroupEvents(events, row) {
-
     var eventTime;
     var event = {};
 
@@ -68,8 +67,6 @@ module.exports = function (config) {
       name: row.name,
       description: utils.htmlStrip(row.description),
       location: constructAddress(row.venue),
-      latitude: row.venue.lat,
-      longitude: row.venue.lon,
       rsvp_count: row.yes_rsvp_count,
       url: row.event_url,
       group_id: row.group.id,
@@ -78,6 +75,11 @@ module.exports = function (config) {
       formatted_time: utils.formatLocalTime(row.time, config.timezone, config.displayTimeformat),
       start_time: eventTime.toISOString(),
       end_time: eventTime.add(row.duration, 'milliseconds').toISOString()
+    }
+
+    if (row.venue.lat !== 0 && row.venue.lon !== 0) {
+      event.latitude = row.venue.lat;
+      event.longitude = row.venue.lon
     }
 
     events.push(event);
