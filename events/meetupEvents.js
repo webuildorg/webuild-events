@@ -14,8 +14,6 @@ var logger = require('tracer').colorConsole({
 
 module.exports = function (config) {
   var blacklistGroups = config.meetupParams.blacklistGroups || [];
-  var blacklistWords = config.meetupParams.blacklistWords || [];
-  var blacklistRE = new RegExp(blacklistWords.join('|'), 'i');
 
   function constructAddress(venue) {
     var address = '';
@@ -36,18 +34,10 @@ module.exports = function (config) {
   }
 
   function isValidGroup(row) {
-    var isValidCountry = row.country === (config.meetupParams.country || row.country);
-    var isValidText = blacklistWords.length === 0 || !(row.name.match(blacklistRE) || (row.description !== undefined && row.description.match(blacklistRE)));
-
-    if (row.name && row.description) {
-      isValidText = blacklistWords.length === 0 ? true : !(row.name.match(blacklistRE) || row.description.match(blacklistRE));
-    } else {
-      isValidText = false;
-    }
-
+    var isValidCountry = row.country === (config.meetupParams.country || row.country)
     var isValidGroupId = !blacklistGroups.some(function(id) { return row.id === id });
 
-    return isValidCountry && isValidText && isValidGroupId;
+    return isValidCountry && isValidGroupId;
   }
 
   function isFree(event) {
