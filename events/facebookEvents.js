@@ -40,6 +40,7 @@ module.exports = function (config) {
         location: row.location,
         rsvp_count: row.attending_count,
         url: 'https://www.facebook.com/events/' + row.id,
+        group_id: fbGroups[ grpIdx ].id,
         group_name: fbGroups[ grpIdx ].name,
         group_url: 'http://www.facebook.com/' + fbGroups[ grpIdx ].id,
         formatted_time: utils.formatLocalTime(row.start_time, config.timezone, config.displayTimeformat),
