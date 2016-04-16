@@ -34,6 +34,7 @@ module.exports = function (config) {
   }
 
   function isValidGroup(row) {
+    // console.log(row.category.id, row.country, row.id, row.name)
     var isValidCountry = row.country === (config.meetupParams.country || row.country)
     var isValidGroupId = !blacklistGroups.some(function(id) { return row.id === id });
 
@@ -108,12 +109,13 @@ module.exports = function (config) {
 
   // getGroupIds returns an array of group IDs
   // matching the given criteria.
-  function getGroupIds() { //regardless of venue
-    var url = 'https://api.meetup.com/2/groups?' +
-      querystring.stringify(config.meetupParams);
+  function getGroupIds(offset) {
+    config.meetupParams.offset = offset
+    var url = 'https://api.meetup.com/2/groups?' + querystring.stringify(config.meetupParams);
 
     return prequest(url).then(function(data) {
-      logger.info('Found ' + data.results.length + ' meetup.com groups');
+      logger.info(`Found ${data.results.length} meetup.com groups with offset=${offset}`);
+
       return data.results
         .filter(isValidGroup)
         .reduce(function(groupIds, row) {
@@ -127,13 +129,15 @@ module.exports = function (config) {
 
   return {
     'get': function () {
-      return getGroupIds()
-      .then(function(groupIds) {
-        return getEventsByGroupIds(groupIds);
+      return getGroupIds(0).then(function(groupIdsOffset0) {
+        return getGroupIds(1).then(function(groupsIdsOffset1) {
+          return getEventsByGroupIds(groupIdsOffset0.concat(groupsIdsOffset1))
+        }).catch(function(err) {
+          logger.error(err)
+        })
+      }).catch(function(err) {
+        logger.error(err)
       })
-      .catch(function(err) {
-        logger.error(err);
-      });
     }
   }
 }
