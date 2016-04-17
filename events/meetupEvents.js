@@ -109,19 +109,21 @@ module.exports = function (config) {
 
   // getGroupIds returns an array of group IDs
   // matching the given criteria.
-  function getGroupIds(offset) {
-    config.meetupParams.offset = offset
-    var url = 'https://api.meetup.com/2/groups?' + querystring.stringify(config.meetupParams);
+  function getGroupIds(url) {
+    url = url || 'https://api.meetup.com/2/groups?' + querystring.stringify(config.meetupParams);
 
     return prequest(url).then(function(data) {
-      logger.info(`Found ${data.results.length} meetup.com groups with offset=${offset}`);
+      logger.info(`Found ${data.results.length} meetup.com groups`);
 
-      return data.results
-        .filter(isValidGroup)
-        .reduce(function(groupIds, row) {
-          groupIds.push(row.id);
-          return groupIds;
-        }, []);
+      return {
+        groups: data.results
+            .filter(isValidGroup)
+            .reduce(function(groupIds, row) {
+              groupIds.push(row.id);
+              return groupIds;
+            }, []),
+        next: data.meta.next
+      };
     }).catch(function(err) {
       logger.error(err);
     });
@@ -129,15 +131,27 @@ module.exports = function (config) {
 
   return {
     'get': function () {
-      return getGroupIds(0).then(function(groupIdsOffset0) {
-        return getGroupIds(1).then(function(groupsIdsOffset1) {
-          return getEventsByGroupIds(groupIdsOffset0.concat(groupsIdsOffset1))
-        }).catch(function(err) {
-          logger.error(err)
-        })
-      }).catch(function(err) {
-        logger.error(err)
-      })
+      function _getAllGroups(groupsAndNext, groups) {
+        groups = (groups || []).concat(getEventsByGroupIds(groupsAndNext.groups));
+
+        if(!!groupsAndNext.next) {
+          return getGroupIds(groupsAndNext.next)
+              .then(function(response) {
+                return _getAllGroups(response, groups);
+              }).catch(function (err) {
+                logger.error(err);
+                return Promise.reject(err);
+              })
+        } else {
+          return Promise.resolve(groups);
+        }
+      }
+
+      return getGroupIds()
+          .then(_getAllGroups)
+          .catch(function (err) {
+            logger.error(err)
+          });
     }
   }
 }
