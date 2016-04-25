@@ -33,6 +33,26 @@ module.exports = function (config) {
     return address;
   }
 
+  function hasWord(phrase, word) {
+    phrase && phrase.toLowerCase().includes(word) ? true : false;
+  }
+
+  function hasValidAddress(event) {
+    var matchWords = [ 'tbd', 'to be decided' ];
+    var countMatch = 0;
+
+    [ event.venue.name,  event.venue.address_1, event.venue.address_2 ].forEach(function(eachAddressPhrase) {
+      matchWords.forEach(function(eachMatchWord) {
+        if (eachAddressPhrase && eachAddressPhrase.toLowerCase().includes(eachMatchWord)) {
+          console.log('Remove event ' + event.name + ' for venue with TBD.')
+          countMatch++;
+        }
+      })
+    })
+
+    return countMatch > 0 ? false : true;
+  }
+
   function isValidGroup(row) {
     // console.log(row.category.id, row.country, row.id, row.name)
     var isValidCountry = row.country === (config.meetupParams.country || row.country)
@@ -54,6 +74,10 @@ module.exports = function (config) {
     }
 
     if (!row.hasOwnProperty('venue') || row.venue_visibility === 'members') {
+      return events;
+    }
+
+    if (!hasValidAddress(row)) {
       return events;
     }
 
