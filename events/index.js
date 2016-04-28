@@ -85,12 +85,17 @@ module.exports = function(config) {
           return blackEvent.id === evt.id;
         });
       });
+
+      var beforeNum = eventsResult.events.length
       eventsResult.events = eventsResult.events.concat(whiteEvents);
       eventsResult.events = eventsResult.events.filter(afterToday);
+
       eventsResult.events.sort(timeComparer);
       eventsResult.events = removeDuplicates(eventsResult.events);
       eventsResult.meta.total_events = eventsResult.events.length;
-      logger.info(clc.green('Success: Added ' + whiteEvents.length + ' ' + type + ' events'));
+
+      var afterNum = eventsResult.events.length
+      logger.info(clc.green('Success: Added ' + (afterNum - beforeNum) + ' ' + type + ' events'));
 
       eventsToday.events = getCurrentDayData(eventsResult);
       eventsToday.meta.generated_at = eventsResult.meta.generated_at;
