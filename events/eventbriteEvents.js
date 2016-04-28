@@ -153,10 +153,9 @@ module.exports = function(config) {
         reject(err)
       })
     }).catch(function(err) {
-      logger.error('Getting eventbrite.com event venues')
       logger.error('Status code: ', err.statusCode)
       logger.error('Message: ', err.message)
-      logger.error(err)
+      logger.error(err.body)
       logger.error(err.stack)
       reject(err)
     })
