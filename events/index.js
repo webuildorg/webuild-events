@@ -90,7 +90,7 @@ module.exports = function(config) {
       eventsResult.events.sort(timeComparer);
       eventsResult.events = removeDuplicates(eventsResult.events);
       eventsResult.meta.total_events = eventsResult.events.length;
-      logger.info('Success: Added ' + whiteEvents.length + ' ' + type + ' events');
+      logger.info(clc.green('Success: Added ' + whiteEvents.length + ' ' + type + ' events'));
 
       eventsToday.events = getCurrentDayData(eventsResult);
       eventsToday.meta.generated_at = eventsResult.meta.generated_at;
