@@ -79,9 +79,6 @@ module.exports = function(config) {
 
   function addEvents(type) {
     API[ 'get' + type + 'Events' ]().then(function(data) {
-      if (type === 'Facebook') {
-        console.log(data)
-      }
       data = data || [];
       var whiteEvents = data.filter(function(evt) {
         return !blacklistEvents.some(function(blackEvent) {
