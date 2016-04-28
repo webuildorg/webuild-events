@@ -5,7 +5,7 @@ var Promise = require('promise');
 var moment = require('moment-timezone');
 var prequest = require('prequest');
 var utils = require('./utils');
-var fbBaseUrl = 'https://graph.facebook.com/v2.1/';
+var fbBaseUrl = 'https://graph.facebook.com/v2.6/';
 var clc = require('cli-color');
 var logger = require('tracer').colorConsole({
   format: '{{timestamp}} <{{title}}> ({{path}}:{{line}}:{{pos}}:{{method}}) {{message}}',
@@ -17,15 +17,34 @@ var logger = require('tracer').colorConsole({
 
 module.exports = function (config) {
   var fbGroups = config.facebookGroups;
-  function saveFacebookEvents(eventsWithVenues, row, grpIdx) {
-    var thisGroupEvents = row.data || [];
+
+  function constructAddress(venue) {
+    var address = '';
+
+    if (venue) {
+      address = [
+        venue.name,
+        ', ',
+        venue.location ? venue.location.street || '' : ''
+      ].join('');
+      address += address.indexOf(config.meetupParams.city) === -1 ? ', ' + config.meetupParams.city : '';
+      address +=  venue.location ? (' ' + venue.location.zip) || '' : ''
+    } else {
+      address = config.meetupParams.city;
+    }
+
+    return address;
+  }
+
+  function saveFacebookEvents(eventsWithVenues, fbEvent, grpIdx) {
+    var thisGroupEvents = fbEvent.data || [];
 
     if (thisGroupEvents.length === 0) {
       return eventsWithVenues;
     }
 
     thisGroupEvents.forEach(function(row) {
-      if (!row.location) {
+      if (!row.place) {
         return;
       }
       if (!row.end_time){
@@ -33,11 +52,11 @@ module.exports = function (config) {
         row.end_time = utils.localTime(row.start_time, config.timezone).add(2, 'hours').toISOString();
       }
 
-      eventsWithVenues.push({
+      var eachEvent = {
         id: row.id,
         name: row.name,
         description: utils.htmlStrip(row.description),
-        location: row.location,
+        location: constructAddress(row.place),
         rsvp_count: row.attending_count,
         url: 'https://www.facebook.com/events/' + row.id,
         group_id: fbGroups[ grpIdx ].id,
@@ -46,7 +65,14 @@ module.exports = function (config) {
         formatted_time: utils.formatLocalTime(row.start_time, config.timezone, config.displayTimeformat),
         start_time: utils.localTime(row.start_time, config.timezone).toISOString(),
         end_time: utils.localTime(row.end_time, config.timezone).toISOString()
-      });
+      };
+
+      if (row.place.location) {
+        eachEvent.latitude = row.place.location.latitude;
+        eachEvent.longitude = row.place.location.longitude;
+      }
+
+      eventsWithVenues.push(eachEvent);
     });
 
     return eventsWithVenues;
@@ -57,7 +83,7 @@ module.exports = function (config) {
       return prequest(fbBaseUrl + group.id + '/events?' +
         querystring.stringify({
           since: moment().utc().utcOffset('+0800').format('X'),
-          fields: 'description,name,end_time,location,timezone,attending_count',
+          fields: 'description,name,end_time,start_time,place,timezone,attending_count',
           access_token: userIdentity.access_token
         })
       );
@@ -69,7 +95,7 @@ module.exports = function (config) {
         var eventsWithVenues = [];
 
         groupsEvents.reduce(saveFacebookEvents, eventsWithVenues);
-        logger.info('Found ' + eventsWithVenues.length + ' facebook.com events');
+        logger.info('Found ' + eventsWithVenues.length + ' facebook.com events with venue');
         resolve(eventsWithVenues);
       }).catch(function(err) {
         logger.error(clc.red('Error: Getting facebook.com events with: ' + JSON.stringify(userIdentity)));
