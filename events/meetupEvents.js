@@ -38,13 +38,14 @@ module.exports = function (config) {
   }
 
   function hasValidAddress(event) {
-    var matchWords = [ 'tbd', 'to be decided' ];
+    // don't inlucde meetups that are not confirmed with location or are online
+    var matchWords = [ 'tbd', 'to be decided', 'http://' ];
     var countMatch = 0;
 
     [ event.venue.name,  event.venue.address_1, event.venue.address_2 ].forEach(function(eachAddressPhrase) {
       matchWords.forEach(function(eachMatchWord) {
         if (eachAddressPhrase && eachAddressPhrase.toLowerCase().includes(eachMatchWord)) {
-          console.log('Remove event ' + event.name + ' for venue with TBD.')
+          logger.trace(clc.magenta('Remove event ' + event.event_url + ' for venue with TBD or online.'));
           countMatch++;
         }
       })

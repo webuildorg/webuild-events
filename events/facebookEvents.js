@@ -72,7 +72,7 @@ module.exports = function (config) {
         logger.info('Found ' + eventsWithVenues.length + ' facebook.com events');
         resolve(eventsWithVenues);
       }).catch(function(err) {
-        console.error(clc.red('Error: Getting facebook.com events with: ' + JSON.stringify(userIdentity)));
+        logger.error(clc.red('Error: Getting facebook.com events with: ' + JSON.stringify(userIdentity)));
         reject(err);
       });
     });
@@ -92,7 +92,7 @@ module.exports = function (config) {
     .then(function(events) {
       return events;
     }).catch(function(err) {
-      console.error(err);
+      logger.error(clc.red(err));
       return getAllFacebookEvents(users); // token failed. Try the next user's token
     })
   }
@@ -116,7 +116,7 @@ module.exports = function (config) {
           resolve(data || []);
         });
       }).catch(function(err) {
-        console.error(clc.red('Error: Getting Auth0 facebook.com users'));
+        logger.error(clc.red('Error: Getting Auth0 facebook.com users'));
         reject(err);
       })
     });
