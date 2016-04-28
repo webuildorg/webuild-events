@@ -126,8 +126,7 @@ module.exports = function (config) {
       logger.info('Info: Found ' + events.length + ' meetup.com group events with venues');
       return events;
     }).catch(function(err) {
-      logger.error('Error: getEventsByGroupIds():');
-      logger.error(err);
+      logger.error(err.body);
     });
   }
 
@@ -155,7 +154,11 @@ module.exports = function (config) {
     'get': function () {
       return getGroupIds(0).then(function(groupIdsOffset0) {
         return getGroupIds(1).then(function(groupsIdsOffset1) {
-          return getEventsByGroupIds(groupIdsOffset0.concat(groupsIdsOffset1))
+          return getEventsByGroupIds(groupIdsOffset0).then(function(events0) {
+            return getEventsByGroupIds(groupsIdsOffset1).then(function(events1) {
+              return events0.concat(events1)
+            })
+          })
         }).catch(function(err) {
           logger.error(err)
         })
