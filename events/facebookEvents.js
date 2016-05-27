@@ -36,6 +36,10 @@ module.exports = function (config) {
     return address;
   }
 
+  function locationHasTBC(place) {
+    return place.toLowerCase().includes('tbc')
+  }
+
   function saveFacebookEvents(eventsWithVenues, fbEvent, grpIdx) {
     var thisGroupEvents = fbEvent.data || [];
 
@@ -47,6 +51,11 @@ module.exports = function (config) {
       if (!row.place) {
         return;
       }
+
+      if (locationHasTBC(row.place.name)) {
+        return;
+      }
+
       if (!row.end_time){
         //TODO : add more sanitization checks for end_time
         row.end_time = utils.localTime(row.start_time, config.timezone).add(2, 'hours').toISOString();
