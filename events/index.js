@@ -56,11 +56,11 @@ module.exports = function(config) {
 
     if ((event1.formatted_time === event2.formatted_time) &&
         (overlappedEventLocation.length > 0)) {
-      if (overlappedEventName.length > 0 || overlappedEventDescription.length > 2) {
-        logger.info('Duplicate event removed [' + overlappedEventDescription.length + ']: ' + event1.url);
-        // console.log(clc.magenta('Info: Duplicate event added: ' + event2.url));
-        // console.log(clc.magenta('Info: Duplicate event overlaps: ' + overlappedEventDescription));
-        // console.log(clc.magenta('-----------'))
+      if (overlappedEventName.length > 0 || overlappedEventDescription.length > 5) {
+        console.log(clc.magenta('Duplicate event removed [' + overlappedEventDescription.length + ']: ' + event1.url));
+        console.log(clc.magenta('Info: Duplicate event added: ' + event2.url));
+        console.log(clc.magenta('Info: Duplicate event overlaps: ' + overlappedEventDescription));
+        console.log(clc.magenta('-----------'))
         return true;
       }
     }
