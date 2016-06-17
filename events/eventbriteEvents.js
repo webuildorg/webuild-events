@@ -56,8 +56,8 @@ module.exports = function(config) {
       group_name: event.organizer.name,
       group_url: event.organizer.url,
       formatted_time: utils.formatLocalTime(event.start.utc, config.timezone, config.displayTimeformat),
-      start_time: event.start.utc,
-      end_time: event.end.utc
+      start_time: utils.localTime(event.start.utc, config.timezone).toISOString(),
+      end_time: utils.localTime(event.end.utc, config.timezone).toISOString() 
     })
 
     return arr
