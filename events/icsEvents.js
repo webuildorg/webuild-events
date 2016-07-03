@@ -108,6 +108,7 @@ module.exports = function(config) {
             wbEvent.formatted_time = utils.formatLocalTime(ev.start_time, config.timezone, config.displayTimeformat);
             wbEvent.start_time = utils.localTime(ev.start_time, config.timezone).toISOString();
             wbEvent.end_time = utils.localTime(ev.end_time, config.timezone).toISOString();
+            wbEvent.platform = 'ics';
 
             return wbEvent;
           })

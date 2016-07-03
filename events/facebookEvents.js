@@ -73,7 +73,8 @@ module.exports = function (config) {
         group_url: 'http://www.facebook.com/' + fbGroups[ grpIdx ].id,
         formatted_time: utils.formatLocalTime(row.start_time, config.timezone, config.displayTimeformat),
         start_time: utils.localTime(row.start_time, config.timezone).toISOString(),
-        end_time: utils.localTime(row.end_time, config.timezone).toISOString()
+        end_time: utils.localTime(row.end_time, config.timezone).toISOString(),
+        platform: 'facebook'
       };
 
       if (row.place.location) {
