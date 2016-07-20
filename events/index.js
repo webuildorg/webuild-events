@@ -26,6 +26,7 @@ var logger = require('tracer').colorConsole({
 module.exports = function(config) {
   var whitelistEvents = config.whitelistEvents;
   var blacklistEvents = config.blacklistEvents;
+
   var API = {
     getFacebookEvents: require('./facebookEvents')(config).get,
     getMeetupEvents: require('./meetupEvents')(config).get,
@@ -82,7 +83,7 @@ module.exports = function(config) {
       data = data || [];
       var whiteEvents = data.filter(function(evt) {
         return !blacklistEvents.some(function(blackEvent) {
-          return blackEvent.id === evt.id;
+          return blackEvent.id.toString() === evt.id.toString();
         });
       });
 
