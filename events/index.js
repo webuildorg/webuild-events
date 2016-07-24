@@ -35,6 +35,18 @@ module.exports = function(config) {
   };
 
   function isDuplicateEvent(event1, event2) {
+
+    if (event1.formatted_time !== event2.formatted_time){
+      return false;
+    }
+
+    if (event1.name === event2.name) {
+      // console.log(clc.magenta('Info: Duplicate event added: ' + event2.url));
+      // console.log(clc.magenta('Info: Duplicate event overlaps: ' + overlappedEventDescription));
+      // console.log(clc.magenta('-----------'))
+      return true;
+    }
+
     var options = {
       ignoreCase: true,
       ignoreCommonWords: true,
@@ -47,25 +59,15 @@ module.exports = function(config) {
     var overlappedEventLocation = overlap(event1.location, event2.location, options);
     var overlappedEventDescription = overlap(event1.description, event2.description, options);
 
-    if ((event1.formatted_time === event2.formatted_time) &&
-      (event1.name === event2.name)) {
-      // console.log(clc.magenta('Info: Duplicate event added: ' + event2.url));
-      // console.log(clc.magenta('Info: Duplicate event overlaps: ' + overlappedEventDescription));
-      // console.log(clc.magenta('-----------'))
+
+    if ( overlappedEventLocation.length > 0 &&
+      (overlappedEventName.length > 0 || overlappedEventDescription.length > 5)) {
+      console.log(clc.magenta('Info: Duplicate event removed: ' + event1.url));
+      console.log(clc.magenta('Info: Duplicate event added: ' + event2.url));
+      console.log(clc.magenta('Info: Duplicate event overlaps [' + overlappedEventDescription.length + ']:' + overlappedEventDescription));
+      console.log(clc.magenta('-----------'))
       return true;
     }
-
-    if ((event1.formatted_time === event2.formatted_time) &&
-        (overlappedEventLocation.length > 0)) {
-      if (overlappedEventName.length > 0 || overlappedEventDescription.length > 5) {
-        console.log(clc.magenta('Duplicate event removed [' + overlappedEventDescription.length + ']: ' + event1.url));
-        console.log(clc.magenta('Info: Duplicate event added: ' + event2.url));
-        console.log(clc.magenta('Info: Duplicate event overlaps: ' + overlappedEventDescription));
-        console.log(clc.magenta('-----------'))
-        return true;
-      }
-    }
-
     return false;
   }
 
