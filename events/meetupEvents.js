@@ -39,7 +39,7 @@ module.exports = function (config) {
 
   function hasValidAddress(event) {
     // don't inlucde meetups that are not confirmed with location or are online
-    var matchWords = [ 'tbd', 'to be decided', 'http://' ];
+    var matchWords = [ 'tbd', 'to be decided', 'http://', 'online', 'webcast', 'https://' ];
     var countMatch = 0;
 
     [ event.venue.name,  event.venue.address_1, event.venue.address_2 ].forEach(function(eachAddressPhrase) {
