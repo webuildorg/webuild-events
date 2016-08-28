@@ -136,25 +136,16 @@ module.exports = function (config) {
   // Get the FB user tokens from auth0
   function getFacebookUsers() {
     return new Promise(function(resolve, reject) {
-      prequest('https://' + config.auth0.domain + '/oauth/token', {
-        method: 'POST',
-        body: {
-          'client_id': config.auth0.clientId,
-          'client_secret': config.auth0.clientSecret,
-          'grant_type': 'client_credentials'
+      prequest('https://' + config.auth0.domain + '/api/v2/users', {
+        'auth': {
+          'bearer': config.auth0.clientToken
         }
       }).then(function(data) {
-        prequest('https://' + config.auth0.domain + '/api/users', {
-          headers: {
-            'Authorization': data.token_type + ' ' + data.access_token
-          }
-        }).then(function(data) {
-          resolve(data || []);
-        });
+        resolve(data || []);
       }).catch(function(err) {
-        logger.error(clc.red('Error: Getting Auth0 facebook.com users'));
-        reject(err);
-      })
+        logger.error(clc.red('Error: Getting Auth0 facebook.com users' + err));
+        reject(err.body);
+      });
     });
   }
 
