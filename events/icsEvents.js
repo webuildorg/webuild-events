@@ -6,7 +6,7 @@ var getUrl = require('get-urls');
 var utils = require('./utils');
 var Promise = require('promise');
 var moment = require('moment-timezone');
-var clc = require('cli-color');
+
 var logger = require('tracer').colorConsole({
   format: '{{timestamp}} <{{title}}> ({{path}}:{{line}}:{{pos}}:{{method}}) {{message}}',
   dateformat: 'mmm dd HH:MM:ss',

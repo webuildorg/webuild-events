@@ -59,7 +59,6 @@ module.exports = function(config) {
     var overlappedEventLocation = overlap(event1.location, event2.location, options);
     var overlappedEventDescription = overlap(event1.description, event2.description, options);
 
-
     if ( overlappedEventLocation.length > 0 &&
       (overlappedEventName.length > 0 || overlappedEventDescription.length > 5)) {
       console.log(clc.magenta('Info: Duplicate event removed: ' + event1.url));

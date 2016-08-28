@@ -5,7 +5,7 @@ var prequest = require('prequest');
 var moment = require('moment-timezone');
 var utils = require('./utils');
 var Promise = require('promise');
-var clc = require('cli-color');
+
 var logger = require('tracer').colorConsole({
   format: '{{timestamp}} <{{title}}> ({{path}}:{{line}}:{{pos}}:{{method}}) {{message}}',
   dateformat: 'mmm dd HH:MM:ss',
@@ -86,7 +86,7 @@ module.exports = function(config) {
 
   function isInWhitelist(thisEvent) {
     return config.eventbriteParams.blacklistOrganiserId.every(function(id) {
-      return thisEvent.organizer_id != id
+      return thisEvent.organizer_id !== id
     })
   }
 
@@ -122,9 +122,8 @@ module.exports = function(config) {
     return utils.waitAllPromises(eventOrgSearchResults)
   }
 
-  function filterEvents(allEvents, resolve) {
+  function filterEvents(allEvents, resolve, reject) {
     var techEvents
-    var freeEventsWithVenue
     var whitelistEvents
     var events = []
 
@@ -183,7 +182,7 @@ module.exports = function(config) {
               allEvents = allEvents.concat(data.events)
             })
 
-            filterEvents(allEvents, resolve)
+            filterEvents(allEvents, resolve, reject)
           }).catch(function(err) {
             logger.error('Getting eventbrite.com events')
             logger.error(err)

@@ -33,10 +33,6 @@ module.exports = function (config) {
     return address;
   }
 
-  function hasWord(phrase, word) {
-    phrase && phrase.toLowerCase().includes(word) ? true : false;
-  }
-
   function hasValidAddress(event) {
     // don't inlucde meetups that are not confirmed with location or are online
     var matchWords = [ 'tbd', 'to be decided', 'http://', 'online', 'webcast', 'https://' ];
@@ -139,7 +135,7 @@ module.exports = function (config) {
     var url = 'https://api.meetup.com/2/groups?' + querystring.stringify(config.meetupParams);
 
     return prequest(url).then(function(data) {
-      logger.info(`Found ${data.results.length} meetup.com groups with offset=${offset}`);
+      logger.info('Found ', data.results.length, ' meetup.com groups with offset=', offset);
 
       return data.results
         .filter(isValidGroup)
