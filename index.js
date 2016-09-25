@@ -9,8 +9,6 @@ module.exports = {
     events = require('./events')(config);
     passport = require('./events/setup-passport')(config);
 
-    events.update();
-
     return {
       'events':events,
       'passport': passport,
