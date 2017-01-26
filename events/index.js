@@ -79,6 +79,35 @@ module.exports = function(config) {
             moment(b.start_time).valueOf());
   }
 
+  function removeDuplicates(feed) {
+    var uniqueEvents = [];
+    var isDuplicate;
+
+    feed.forEach(function(thisEvent) {
+      isDuplicate = uniqueEvents.some(function(thatEvent) {
+        return isDuplicateEvent(thisEvent, thatEvent);
+      })
+
+      if (!isDuplicate) {
+        uniqueEvents.push(thisEvent);
+      }
+    })
+
+    return uniqueEvents;
+  }
+
+  function getCurrentDayData(data) {
+    return data.events.filter(function(element) {
+      return moment(data.meta.generated_at).diff(moment(element.start_time), 'days') === 0;
+    })
+  }
+
+  function getCurrentHourData(data) {
+    return data.events.filter(function (element) {
+      return moment(element.formatted_time, 'DD MMM YYYY, ddd, hh:mm a').isBefore(moment().add(1, 'hour'))
+    })
+  }
+
   function addEvents(type) {
     API[ 'get' + type + 'Events' ]().then(function(data) {
       data = data || [];
@@ -113,35 +142,6 @@ module.exports = function(config) {
     }).catch(function(err) {
       logger.error('Failed to add ' + type + ' events: HTTP Status Code ' + err.statusCode || err);
     });
-  }
-
-  function removeDuplicates(feed) {
-    var uniqueEvents = [];
-    var isDuplicate;
-
-    feed.forEach(function(thisEvent) {
-      isDuplicate = uniqueEvents.some(function(thatEvent) {
-        return isDuplicateEvent(thisEvent, thatEvent);
-      })
-
-      if (!isDuplicate) {
-        uniqueEvents.push(thisEvent);
-      }
-    })
-
-    return uniqueEvents;
-  }
-
-  function getCurrentDayData(data) {
-    return data.events.filter(function(element) {
-      return moment(data.meta.generated_at).diff(moment(element.start_time), 'days') === 0;
-    })
-  }
-
-  function getCurrentHourData(data) {
-    return data.events.filter(function (element) {
-      return moment(element.formatted_time, 'DD MMM YYYY, ddd, hh:mm a').isBefore(moment().add(1, 'hour'))
-    })
   }
 
   return {

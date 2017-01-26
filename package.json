@@ -50,23 +50,23 @@
   },
   "devDependencies": {
     "chai": "^3.4.1",
-    "grunt": "^0.4.5",
-    "grunt-bump": "^0.6.0",
-    "grunt-cli": "^0.1.13",
-    "grunt-contrib-jshint": "^0.11.3",
-    "grunt-jscs": "^2.3.0"
+    "grunt": "^1.0.1",
+    "grunt-bump": "^0.8.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-jscs": "^3.0.1"
   },
   "dependencies": {
-    "cli-color": "1.0.0",
-    "get-urls": "5.0.0",
-    "ical": "0.4.0",
-    "moment-timezone": "0.4.0",
-    "passport": "0.2.2",
-    "passport-auth0": "0.3.0",
-    "prequest": "0.0.3",
-    "promise": "7.0.4",
-    "striptags": "2.0.2",
+    "cli-color": "1.1.0",
+    "get-urls": "7.0.0",
+    "ical": "0.5.0",
+    "moment-timezone": "0.5.11",
+    "passport": "0.3.2",
+    "passport-auth0": "0.6.0",
+    "prequest": "1.0.0",
+    "promise": "7.1.1",
+    "striptags": "2.2.1",
     "tracer": "^0.8.3",
-    "word-overlap": "2.4.0"
+    "word-overlap": "2.4.1"
   }
 }

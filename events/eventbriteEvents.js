@@ -86,7 +86,7 @@ module.exports = function(config) {
 
   function isInWhitelist(thisEvent) {
     return config.eventbriteParams.blacklistOrganiserId.every(function(id) {
-      return thisEvent.organizer_id !== ''+id
+      return thisEvent.organizer_id !== '' + id
     })
   }
 
