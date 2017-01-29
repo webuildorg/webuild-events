@@ -23,8 +23,7 @@ module.exports = function(config) {
   var urlParamsForSearch = function(pageNum) {
     return {
       url: baseUrl + '?' + querystring.stringify({
-        'venue.country': config.symbol,
-        'venue.city': config.city,
+        'location.address': config.city,
         'start_date.range_end': moment().add(2, 'months').format('YYYY-MM-DD') + 'T00:00:00Z',
         'page': pageNum,
         'price': 'free'
