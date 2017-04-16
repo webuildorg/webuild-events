@@ -135,6 +135,14 @@ module.exports = function (config) {
     var url = 'https://api.meetup.com/2/groups?' + querystring.stringify(config.meetupParams);
 
     return prequest(url).then(function(data) {
+      if (!data){
+        data = {'results' : []};
+      }
+
+      if (!data.results){
+        data.results = [];
+      }
+
       logger.info('Found ', data.results.length, ' meetup.com groups with offset=', offset);
 
       return data.results
@@ -154,6 +162,7 @@ module.exports = function (config) {
         return getGroupIds(1).then(function(groupsIdsOffset1) {
           return getEventsByGroupIds(groupIdsOffset0).then(function(events0) {
             return getEventsByGroupIds(groupsIdsOffset1).then(function(events1) {
+              if (!events0) events0 = [];
               return events0.concat(events1)
             })
           })
