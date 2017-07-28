@@ -116,25 +116,6 @@ module.exports = function (config) {
     });
   }
 
-  // Recursively try all available user access tokens (some may have expired)
-  //  until one is able to return facebook.com events.
-  //  We assume that all access tokens are able to access all white listed fb groups.
-  function getAllFacebookEvents(users) {
-    if (users.length === 0) {
-      return [];
-    }
-
-    var user = users.pop();
-
-    return getFacebookEvents(user.identities[ 0 ])
-    .then(function(events) {
-      return events;
-    }).catch(function(err) {
-      logger.error(clc.red(err));
-      return getAllFacebookEvents(users); // token failed. Try the next user's token
-    })
-  }
-
   // Get the FB user tokens from auth0
   function getFacebookUsersfromAuth0() {
     return new Promise(function(resolve, reject) {
@@ -177,6 +158,25 @@ module.exports = function (config) {
     }).catch(function(err) {
       logger.error('Getting facebook.com groupRequests with all user tokens: ' + err);
     });
+  }
+
+  // Recursively try all available user access tokens (some may have expired)
+  //  until one is able to return facebook.com events.
+  //  We assume that all access tokens are able to access all white listed fb groups.
+  function getAllFacebookEvents(users) {
+    if (users.length === 0) {
+      return [];
+    }
+
+    var user = users.pop();
+
+    return getFacebookEvents(user.identities[ 0 ])
+    .then(function(events) {
+      return events;
+    }).catch(function(err) {
+      logger.error(clc.red(err));
+      return getAllFacebookEvents(users); // token failed. Try the next user's token
+    })
   }
 
   return {
