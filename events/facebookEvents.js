@@ -40,11 +40,11 @@ module.exports = function (config) {
     return place.toLowerCase().includes('tbc')
   }
 
-  function saveFacebookEvents(eventsWithVenues, fbEvent, grpIdx) {
-    var thisGroupEvents = fbEvent.data || [];
+  function generateEventObjectPerEvent(eventsArray, groupEvent, grpIdx) {
+    var thisGroupEvents = groupEvent.data || [];
 
     if (thisGroupEvents.length === 0) {
-      return eventsWithVenues;
+      return eventsArray;
     }
 
     thisGroupEvents.forEach(function(row) {
@@ -82,33 +82,35 @@ module.exports = function (config) {
         eachEvent.longitude = row.place.location.longitude;
       }
 
-      eventsWithVenues.push(eachEvent);
+      eventsArray.push(eachEvent);
     });
 
-    return eventsWithVenues;
+    return eventsArray;
   }
 
-  function getFacebookUserEvents(userIdentity) {
-    var groups = fbGroups.map(function(group) {
+  function getFacebookEvents(user) {
+    var groupRequests = fbGroups.map(function(group) {
       return prequest(fbBaseUrl + group.id + '/events?' +
         querystring.stringify({
           since: moment().utc().utcOffset('+0800').format('X'),
           fields: 'description,name,end_time,start_time,place,timezone,attending_count',
-          access_token: userIdentity.access_token
+          access_token: user.access_token
         })
       );
     });
 
     return new Promise(function(resolve, reject) {
-      utils.waitAllPromises(groups).then(function(groupsEvents) {
-        logger.info('Found ' + groupsEvents.length + ' facebook.com groups');
-        var eventsWithVenues = [];
+      utils.waitAllPromises(groupRequests).then(function(eventsForAllGroups) {
+        logger.info('Found ' + eventsForAllGroups.length + ' facebook.com group');
+        var eventsArray = [];
 
-        groupsEvents.reduce(saveFacebookEvents, eventsWithVenues);
-        logger.info('Found ' + eventsWithVenues.length + ' facebook.com events with venue');
-        resolve(eventsWithVenues);
+        eventsForAllGroups.reduce(generateEventObjectPerEvent, eventsArray);
+
+        logger.info('Found ' + eventsArray.length + ' facebook.com events with venue');
+
+        resolve(eventsArray);
       }).catch(function(err) {
-        logger.error(clc.red('Error: Getting facebook.com events with: ' + JSON.stringify(userIdentity)));
+        logger.error(clc.red('Error: Getting facebook.com events with: ' + JSON.stringify(user)));
         reject(err);
       });
     });
@@ -124,7 +126,7 @@ module.exports = function (config) {
 
     var user = users.pop();
 
-    return getFacebookUserEvents(user.identities[ 0 ])
+    return getFacebookEvents(user.identities[ 0 ])
     .then(function(events) {
       return events;
     }).catch(function(err) {
@@ -134,7 +136,7 @@ module.exports = function (config) {
   }
 
   // Get the FB user tokens from auth0
-  function getFacebookUsers() {
+  function getFacebookUsersfromAuth0() {
     return new Promise(function(resolve, reject) {
       prequest('https://' + config.auth0.domain + '/api/v2/users', {
         'auth': {
@@ -149,11 +151,11 @@ module.exports = function (config) {
     });
   }
 
-  function filterValidFacebookUsers(users) { //must have access to groups
-    var base = fbBaseUrl + '/me/groups?';
+  function filterValidFacebookUsers(facebookUsers) { //must have access to groupRequests
+    var base = fbBaseUrl + '/me/groupRequests?';
     var groupPromises;
 
-    groupPromises = users.map(function(user) {
+    groupPromises = facebookUsers.map(function(user) {
       return prequest(base +
         querystring.stringify({
           access_token: user.identities[ 0 ].access_token
@@ -161,25 +163,27 @@ module.exports = function (config) {
       );
     });
 
-    return utils.waitAllPromises(groupPromises).then(function(userGroups) {
+    return utils.waitAllPromises(groupPromises).then(function(usersWithGroups) {
       var validusers
 
-      logger.info('Found ' + userGroups.length + ' facebook.com authorized users');
-      validusers = users.filter(function(user, idx) {
-        return userGroups[ idx ].data && userGroups[ idx ].data.length > 0
+      logger.info('Found ' + usersWithGroups.length + ' facebook.com authorized users');
+
+      validusers = facebookUsers.filter(function(user, idx) {
+        return usersWithGroups[ idx ].data && usersWithGroups[ idx ].data.length > 0
       });
-      logger.info('Found ' + validusers.length + ' facebook.com users with accessible groups');
+
+      logger.info('Found ' + validusers.length + ' facebook.com users with accessible groupRequests');
       return validusers;
     }).catch(function(err) {
-      logger.error('Getting facebook.com groups with all user tokens: ' + err);
+      logger.error('Getting facebook.com groupRequests with all user tokens: ' + err);
     });
   }
 
   return {
     'get': function() {
-      return getFacebookUsers().then(function(allUsers) {
-        return filterValidFacebookUsers(allUsers).then(function(users) {
-          return getAllFacebookEvents(users);
+      return getFacebookUsersfromAuth0().then(function(allFacebookUsers) {
+        return filterValidFacebookUsers(allFacebookUsers).then(function(validFacebookUsers) {
+          return getAllFacebookEvents(validFacebookUsers);
         });
       }).catch(function(err) {
         logger.error(err);
