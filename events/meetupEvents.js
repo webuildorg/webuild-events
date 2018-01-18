@@ -160,12 +160,13 @@ module.exports = function (config) {
     'get': function () {
       return getGroupIds(0).then(function(groupIdsOffset0) {
         return getGroupIds(1).then(function(groupsIdsOffset1) {
-          return getEventsByGroupIds(groupIdsOffset0).then(function(events0) {
-            return getEventsByGroupIds(groupsIdsOffset1).then(function(events1) {
-              if (!events0) {
-                events0 = [];
-              }
-              return events0.concat(events1)
+          return getGroupIds(2).then(function(groupsIdsOffset2) {
+            return getEventsByGroupIds(groupIdsOffset0).then(function(events0) {
+              return getEventsByGroupIds(groupsIdsOffset1).then(function(events1) {
+                return getEventsByGroupIds(groupsIdsOffset2).then(function(events2) {
+                  return events0.concat(events1).concat(events2)
+                })
+              })
             })
           })
         }).catch(function(err) {
